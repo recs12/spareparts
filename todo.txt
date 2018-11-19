@@ -1,0 +1,10 @@
+modules:
+macro: add_sheet_with_legends
+macro: add_levels
+
+macro: create_filters_report_used_in_macro
+macro: create_levels_report
+macro: help_option_of_the_library
+
+
+note: use of Click library

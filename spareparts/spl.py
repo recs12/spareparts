@@ -2,95 +2,21 @@
 # coding: utf-8
 
 import os
+import sys
 from glob import glob
 import logging
-
 import numpy as np
 import pandas as pd
 import xlwings as xw
-
-JDEPATH = r"Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx"
-
-#filers on prp1
-list_prp1 = [
-             'Fitting',
-             'Metric Fastener',
-             'Inch Fastener',
-             'Stainless Steel',
-             'Steel',
-             'Electric Component',
-             'Sign & Label'
-]
-
-#Excel extracted settings
-col = ["Item Number",
-        "Drawing",
-        "Quantity",
-        "Equipment",
-        "Module",
-        "Level of significance", 
-        "Category",
-        "Other Information",
-        "UOM",
-        "ST",
-        "Description 1", 
-        "Description 2",
-        "Search Text",
-        "Unit Cost",
-        "Extended Cost",
-        "jdelitm",
-        "prp1", 
-        "prp2",
-        "file_name",
-        "Type"
-]
-
-dict_header = {
-    'A2':'part_number',
-    'C2':'quantity',
-    'E2':'module',
-    'I2':'stocking_type',
-    'K2':'description_1',
-    'L2':'description_2',
-    'M2':'search_text',
-    'N2':'unit_cost',
-    'P2':'jdelitm',
-    'Q2':'description_prp1',
-    'R2':'description_prp2',
-    'S2':'file_name',
-    'T2':'type'
-}
-
-#color cells
-color_bg = {
-    'I:M' : (235, 247, 133), #yellow
-    'A1:C1': (170, 203, 255), #blue
-    'D1:H1': (183, 185, 188), #grey
-    'I1:M1': (122, 216, 117), #green
-    'N1:R1': (122, 100, 100) #red
-}
-
-#color legend
-color_filters = {
-    'I:M' : (235, 247, 133), #bordeau
-    'A1:C1': (170, 203, 255), #red
-    'D1:H1': (183, 185, 188), #orange
-    'I1:M1': (122, 216, 117), #mauve
-    'N1:R1': (122, 100, 100) #green
-}
-
-
-logging.basicConfig(filename='sample.log',
-                    level=logging.INFO,
-                    format= '%(asctime)s : %(name)s : %(message)s')
+from spareparts.config import *
 
 def timer(func):
     from datetime import datetime as dt
     def inner(data):
         t1= dt.now()
-        df = func(data)        
+        df = func(data)
         t2= dt.now()
-        logging.info(f"execution time: {(t2- t1).seconds}'s")
+        print(f"JDE loading time:\t{(t2- t1).seconds}'s")
         return df
     return inner
 
@@ -102,12 +28,26 @@ def extract_jde(location_jde):
     df = pd.read_excel( location_jde ,
                         sheet_name=0,
                         skiprows=[0,1,2,3],
-                        usecols="A,C,P,E,H,I,AR,AT,CC",
+                        usecols="A,C,P,E,H,I,O,AR,AT,CC",
                         dtype={'Business Unit':int,'Unit Cost':float}
                         )
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     df = df[df.business_unit == 101]
     return df
+
+@timer
+def load_jde_data(location_jde):
+    if os.path.exists('jde.csv'):
+        answer = input("Do you want to load the temporary jde? (fast but not recommended) \n Proceed ([y]/n) ?:")
+        if answer in ['yes','y','YES','Y']:
+            jde_temp = pd.read_csv('jde.csv')
+            return jde_temp
+        else:
+            sys.exit()
+    else:
+        jde_data = extract_jde(location_jde)
+        jde_data.to_csv('jde.csv')
+        return jde_data
 
 def extract_data(fichier):
     #add try and except
@@ -150,42 +90,42 @@ def creating_excel(df):
     for colum,data in dict_header.items():
         sht.range(colum).options(index=False, header=False).value = df[data]
     sht.autofit()
+    wb.save(r'spl_auto.xlsx')
 
-def proceed_yes_or_no():
-    import sys
-    answer = input("Proceed ([y]/n) ?:  ")
-    if answer == "y":
-        pass
-    else:
-        sys.exit("Process has stopped.")
+def joining_spl_jde(jde, parts):
+    """transform the jde column to string format
+    join the parts documents with the jde on jdelitm column
+    and sort it on column:module
+    """
+    jde.item_number = jde.item_number.astype(str)
+    spl = parts.join(jde.set_index("item_number"), on='jdelitm').sort_values('module')
+    return spl
+
+def creating_part_type_column(spl):
+    """create a column type --> .par .psm .asm"""
+    spl['type'] = spl.file_name.str.split('.').str[-1].str.strip()
+    return spl
+
+def filtering_part_P1_or_A1_format(spl):
+    """filter --> number_P1.par  & number_A1.par"""
+    spl= spl[~spl["part_number"].str.contains(r"\d{6}_[P|A]?\d{1}").values]
+    return spl
 
 def main(location_jde, location_files):
     """manipulation of the date before creating the excel file"""
-    #openpyxl may offer some support for speed -> try
-    jde = extract_jde(location_jde)
-    files_list = [file for file in listing_txt_files(location_files)]
+    jde = load_jde_data(location_jde)
+    files_list = (file for file in listing_txt_files(location_files))
     parts = pd.concat([extract_data(file) for file in files_list], ignore_index=True)
-    jde.item_number = jde.item_number.astype(str)
-    spl = parts.join(jde.set_index("item_number"), on='jdelitm').sort_values('module')
-    ####Filters - prp1 - prp2
-    spl = spl[~spl.description_prp1.isin(list_prp1)]
-    #filter 111111_P1 .par
-    spl= spl[~spl["part_number"].str.contains(r"\d{6}_P?\d{1}").values]
-    #create a column part type
-    spl['type'] = spl.file_name.str.split('.').str[-1].str.strip()
-    #filter asm without UOM
-    spl = spl[~((spl['stocking_type'].isna())&(spl['type']=='asm'))]
-    ####Excel file creation 
+    spl = joining_spl_jde(jde, parts)
+    spl = creating_part_type_column(spl)
+    spl = filtering_part_P1_or_A1_format(spl)
     creating_excel(spl) 
     
 if __name__ == '__main__':
     main(JDEPATH ,".")
-    # main("INV-PTP-JDE.xlsx")
 
-#canei
 #remplace the letters variable by meaningfull name
 #REFACTOR
 #add docstring
 #raise exception inside fouctions
-#logging file whitout root:
 #progress bar
