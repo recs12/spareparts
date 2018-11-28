@@ -8,7 +8,7 @@ import logging
 import numpy as np
 import pandas as pd
 import xlwings as xw
-from spareparts.config import *
+from spareparts.settings.config import *
 
 def timer(func):
     from datetime import datetime as dt
@@ -124,6 +124,7 @@ def main(location_jde, location_files):
 if __name__ == '__main__':
     main(JDEPATH ,".")
 
+#add the module number in the dataframe (even if not use yet)
 #remplace the letters variable by meaningfull name
 #REFACTOR
 #add docstring

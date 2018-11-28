@@ -1,49 +1,39 @@
 #!python3
-"""
-levels.py : create a database associating -->  jdeitem & level 
-using a sample of SPL lists supplied in the same folder 
-"""
-
-import os
-import sys
 from glob import glob
-import numpy as np
 import pandas as pd
+import os
 import xlwings as xw
 
-list_of_spl = glob('*SPL*.xlsm')
-print(list_of_spl)
+def loading_spl(path):
+        spl = pd.read_excel(path)
+        spl.columns = spl.columns.str.strip().str.lower().str.replace(' ', '_')
+        spl.item_number = spl.item_number.astype('str')
+        spl = spl[['item_number']]
+        return spl
 
-dk = {'Level 3: Complete Parts Inventory': 3,
- 'Level 2: Useful Parts': 2,
- 'Level 1: Critical Parts': 1,
- '1': 1,
- '2': 2,
- '3': 3}
+def loading_db(path):
+        df = pd.read_csv(path)
+        df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+        df.item_number = df.item_number.astype('int')
+        df.item_number = df.item_number.astype(str)
+        df.item_number = df.item_number.str.strip()
+        df = df[['item_number','stat']]
+        return df
 
-def extract_levels(file):
-    """extraction of the data from the excel SPL file
-    the excel file must have <SPL> written in the filename
-    extracted : 
-    item number | equipment | module number | level of significance(text string) | level number(integer)  
-    """
-    df = pd.read_excel(file,
-                        sheet_name=1,
-                        header= 1,
-                        usecols="A,D,E,F")
-    df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
-    return df
+def on_excel_file(selected_file, datum):
+        wb = xw.Book(selected_file)   
+        sht = wb.sheets[0]
+        sht.range('F2').options(index=False, header=False).value = datum
 
-#merge the data of all excel file the same dataframe with pandas
-files_list = (file for file in list_of_spl)
-levels = pd.concat([extract_levels(file) for file in files_list], ignore_index=True)
-#filter the empty rows
-levels = levels[levels.item_number.notnull()]
-#create a new column with the level for each row
-levels['level'] = levels.level_of_significance.map(dk, na_action=None)
-#create exvel file output
-levels.to_csv('levels.csv')
-            
+if __name__ == '__main__':
+        spl_path = glob('###*.xlsx')[0]
+        spl = loading_spl(spl_path)
+        db = loading_db('db.csv')
+        l = spl.join(db.set_index('item_number'), on='item_number')
+        on_excel_file(spl_path, l['stat'])  
+    
+    
 
 
 
+    

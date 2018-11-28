@@ -1,0 +1,90 @@
+#!python3
+"""
+levels.py : create a database associating -->  jdeitem & level 
+using a sample of SPL lists supplied in the same folder 
+"""
+
+import os
+import sys
+from glob import glob
+import numpy as np
+import pandas as pd
+import xlwings as xw
+
+list_of_spl = glob('*SPL*.xlsm')
+print(list_of_spl)
+
+dk = {'Level 3: Complete Parts Inventory': 3,
+ 'Level 2: Useful Parts': 2,
+ 'Level 1: Critical Parts': 1,
+ '1': 1,
+ '2': 2,
+ '3': 3}
+
+def extract_levels(file):
+    """extraction of the data from the excel SPL file
+    the excel file must have <SPL> written in the filename
+    extracted : 
+    item number | equipment | module number | level of significance(text string) | level number(integer)  
+    """
+    df = pd.read_excel(file,
+                        sheet_name=1,
+                        header= 1,
+                        usecols="A,D,E,F")
+    df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+    return df
+
+#merge the data of all excel file the same dataframe with pandas
+files_list = (file for file in list_of_spl)
+levels = pd.concat([extract_levels(file) for file in files_list], ignore_index=True)
+#filter the empty rows
+levels = levels[levels.item_number.notnull()]
+#create a new column with the level for each row
+levels['level'] = levels.level_of_significance.map(dk, na_action=None)
+#create exvel file output
+
+
+# *************
+# df = pd.read_csv('levels.csv') #load the csv file
+#frame data item | level -> levels
+levels = levels[['item_number','level']]#filter usefull column
+#sort by item_number (so I can see the same items stack together)
+levels_ordered = levels.sort_values(by='item_number')
+#OPTION 1: add 3 columns level1 \ level2 \ level3
+#THEN
+#apply for 1 add 1  to df['level1']=1
+#apply for 2 add 2 to df['level2']=2
+#apply for 3 add 3 to df['level3']=3
+
+# for index in levels_ordered.iterrows():
+#     print(levels_ordered['level'] )
+levels_ordered['Level 1: Critical Parts'] = levels_ordered.level.map({1:1,2:0,3:0}); 
+levels_ordered['Level 2: Useful Parts'] = levels_ordered.level.map({1:0,2:1,3:0}); 
+levels_ordered['Level 3: Complete Parts Inventory'] = levels_ordered.level.map({1:0,2:0,3:1})
+levels_ordered.set_index('item_number')
+#drop the NaN rows
+levels_NaN_removed = levels_ordered.dropna()
+# columns_levels = levels_ordered.columns.tolist();columns_levels[2:5] (generate list columns)
+#merge lines on items columns and sum the columns of levels previously created
+df = levels_NaN_removed.groupby(['item_number'], as_index=False)['Level 1: Critical Parts',
+ 'Level 2: Useful Parts',
+ 'Level 3: Complete Parts Inventory'].sum()
+
+#df[['level_1','level_2','level_3']]
+df['stat'] = df[['Level 1: Critical Parts',
+ 'Level 2: Useful Parts',
+ 'Level 3: Complete Parts Inventory']].idxmax(axis=1)
+
+df['default'] = df[['Level 1: Critical Parts',
+ 'Level 2: Useful Parts',
+ 'Level 3: Complete Parts Inventory']].astype(bool).sum(axis=1)
+# df.to_json('items_levels.json')
+df['bool']= df.default.map({1:True,2:False,3:False}, na_action='ignore')
+# *************
+
+
+df.to_csv('db.csv')
+            
+
+
+

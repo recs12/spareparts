@@ -5,7 +5,7 @@ from glob import glob
 import os
 import pandas as pd
 import xlwings as xw
-from spareparts.categories import categories 
+from spareparts.settings.categories import categories 
 
 bin_prp1 = categories['bin']['prp1']
 bin_prp2 = categories['bin']['prp2']
