@@ -1,10 +1,33 @@
 modules:
-macro: add_sheet_with_legends
-macro: add_levels
 
-macro: create_filters_report_used_in_macro
-macro: create_levels_report
-macro: help_option_of_the_library
+0.main script - allowing navigation* 
+ask confirmation : level? before proceeding 
+ask confirmation : colors? before proceeding 
+
+1 . add a second sheet with removed - third sheet with legend
+
+2. modification - bleu - mauve selection (no color the all row)
+
+3. ability to compare 2  SPL new column _> same- missing
+
+4. add rolling data filter.
+
+5.price x quantity macro ()
+
+6.documentations
+
+7.testing
+
+8.regrading level choice : indicate somewhere, the list of previous spl taken to build the database db.csv -> db.txt
+
+9.build an Object Oriented version of the app
+
+10. add the command --options (Click)
+	spareparts --help (-h) : 
+	python -m spareparts  -l - c (--levels --colors )
 
 
-note: use of Click library
+
+
+
+

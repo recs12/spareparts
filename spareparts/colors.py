@@ -1,11 +1,15 @@
 #!python3
+# -*- coding: utf-8 -*-
+"""
+
+"""
 
 import functools
 from glob import glob
 import os
 import pandas as pd
 import xlwings as xw
-from spareparts.settings.categories import categories 
+from spareparts.parameters import categories 
 
 bin_prp1 = categories['bin']['prp1']
 bin_prp2 = categories['bin']['prp2']
@@ -83,7 +87,7 @@ def colorizing_obsolete_usedup(color):
                         d,s = wrapped_function(*args, **kwargs)
                         targeted_index = d.index[d.ST.isin(['O','U'])].tolist()
                         for row in targeted_index:
-                                s.range('A2:T2').expand('down').rows[row].color = color
+                                s.range('J2').rows[row].color = color
                         return (d,s)
                 return _wrapper
         return _outer_wrapper
@@ -119,11 +123,12 @@ def colorizing_bin(criteria_1, criteria_2, color):
                         d,s = wrapped_function(*args, **kwargs)
                         targeted_index = d.index[d.prp1.isin(criteria_1)].tolist()
                         for row in targeted_index:
-                                s.range('A2:T2').expand('down').rows[row].color = color
+                                s.range('I2').rows[row].color = color
                         return (d,s)
                 return _wrapper
         return _outer_wrapper
 
+@colorizing_MT(blue)
 @colorizing_obsolete_usedup(mauve) 
 @colorizing_bin(bin_prp1, bin_prp2 ,pink)
 @colorizing_FT_RL(green)
@@ -131,15 +136,14 @@ def colorizing_bin(criteria_1, criteria_2, color):
 @colorizing_boulonnerie(boulonnerie_prp1, red)       
 @colorizing_plates(plates_prp1, grey)       
 @colorizing_assemblies(grey_dark)
-@colorizing_MT(blue)
-def on_excel_file(selected_file):
+def add_colors(selected_file):
         df = pd.read_excel(selected_file)
         wb = xw.Book(selected_file)   
         sht = wb.sheets[0]
         return (df,sht)
 
 if __name__ == '__main__':
-    on_excel_file(selected_file)
+    add_colors(selected_file)
 
 #add display ouput for user 
 #add progress bar

@@ -27,7 +27,8 @@ col = ["Item Number",
 dict_header = {
     'A2':'part_number',
     'C2':'quantity',
-    'E2':'module',
+    'E2':'module',    
+    'F2':'possibility',    
     'I2':'unit_of_measure',
     'J2':'stocking_type',
     'K2':'description_1',
@@ -48,4 +49,46 @@ color_bg = {
     'D1:H1': (183, 185, 188), #grey
     'I1:M1': (122, 216, 117), #green
     'N1:R1': (122, 100, 100) #red
+}
+
+categories = {
+'plates' : {
+    'prp1': ['Aluminium','Stainless Steel','Steel'],
+    'prp2':[]
+    }
+,
+'boulonnerie' : {
+    'prp1': ['Inch Fastener','Inch Hardware','Metric Fastener','Metric Hardware'],
+    'prp2':[]
+    }
+,
+'bin' : {
+    'prp1': ['Sign & Label','Synthetic Product','Plumbing Hardware','Pièce Manufacturée Magasin'],
+    'prp2': []
+    }
+,
+'items_electric' : {
+    'prp1':['Electric Component'],
+    'prp2':['Cable Tray & Cable Carrier', 'Conduits & fittings']
+    }
+,
+'items_obsolete_usedup' : {
+    'prp1': [],
+    'prp2':[]
+    }
+,
+'items_ea' : {
+    'prp1': [],
+    'prp2':[]
+    }
+,
+'items_non_conforme' : {
+    'prp1':[],
+    'prp2':[]
+    }
+,
+'items_to_validate' : {
+    'prp1':[],
+    'prp2':[]
+    }
 }
