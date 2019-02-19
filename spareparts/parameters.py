@@ -1,6 +1,5 @@
 JDEPATH = r"Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx"
 
-
 #Excel extracted settings
 col = ["Item Number",
         "Drawing",
@@ -21,11 +20,15 @@ col = ["Item Number",
         "prp1", 
         "prp2",
         "file_name",
-        "Type"
+        "Type",
+        "drawing"
 ]
 
+#equivalent ->  Excel position & columns name of the data
+#e.g. the data in excel column 'A2' is from  spl.part_number
 dict_header = {
     'A2':'part_number',
+    'B2':'drawing_number',
     'C2':'quantity',
     'E2':'module',    
     'F2':'possibility',    
@@ -39,7 +42,8 @@ dict_header = {
     'Q2':'description_prp1',
     'R2':'description_prp2',
     'S2':'file_name',
-    'T2':'type'
+    'T2':'type',
+    'U2':'drawing'
 }
 
 #color cells
@@ -71,24 +75,31 @@ categories = {
     'prp1':['Electric Component'],
     'prp2':['Cable Tray & Cable Carrier', 'Conduits & fittings']
     }
-,
-'items_obsolete_usedup' : {
-    'prp1': [],
-    'prp2':[]
-    }
-,
-'items_ea' : {
-    'prp1': [],
-    'prp2':[]
-    }
-,
-'items_non_conforme' : {
-    'prp1':[],
-    'prp2':[]
-    }
-,
-'items_to_validate' : {
-    'prp1':[],
-    'prp2':[]
-    }
 }
+
+#parts you find in a gripper that does not need to be in the spl
+contents_of_gripper = ["PT1124830",
+                        "PT0078604",
+                        "PT0078603",
+                        "24104091",
+                        "24101598",
+                        "24101597",
+                        "171257",
+                        "171259",
+                        "171256",
+                        "24100056",
+                        "171255",
+                        "PT0078602",
+                        "PT0078601",
+                        "EEG58C7007P-1",
+                        "24100360",
+                        "EEG58C6002P-6",
+                        "54010220",
+                        "24300030",
+                        "24104854",
+                        "24104591",
+                        "24104548",
+                        "162922",
+                        "122896",
+                        "122857",
+                        "162925_EEG58C"]

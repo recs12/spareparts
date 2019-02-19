@@ -43,7 +43,7 @@ def assign_levels(df):
     'Level 1: Critical Parts': 1,
     '1': 1,
     '2': 2,
-    '3': 3
+    '3': 3,
     }
     df['level'] = df.level_of_significance.map(dk, na_action=None)
     return df
@@ -55,8 +55,11 @@ def extract_levels(file):
     df = pd.read_excel(file,
                         sheet_name=1,
                         header= 1,
-                        usecols="A,D,E,F")
+                        usecols="A,F",
+                        dtype = {0: str , 1: str}
+                        )
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+    df = df.dropna(how='all') # beta
     return df
 
 def two_columns_ordered(df):
@@ -68,9 +71,9 @@ def two_columns_ordered(df):
     levels_ordered['Level 3: Complete Parts Inventory'] = levels_ordered.level.map({1:0,2:0,3:1})
     levels_ordered.set_index('item_number')
     #drop the NaN rows
-    levels_NaN_removed = levels_ordered.dropna()
+    # levels_NaN_removed = levels_ordered.dropna()
     #merge lines on items columns and sum the columns of levels previously created
-    df = levels_NaN_removed.groupby(['item_number'], as_index=False)[
+    df = levels_ordered.groupby(['item_number'], as_index=False)[
     'Level 1: Critical Parts',
     'Level 2: Useful Parts',
     'Level 3: Complete Parts Inventory'
@@ -100,6 +103,11 @@ def create_csv(df, name='db.csv'):
     pprint.pprint(report)
     print(f'Task compeleted: -> {name} created ')
 
+
+def fill_possibility_with_question_mark(df):
+    df['possibility'].fillna(0, inplace=True)
+    return df
+
 def main():
     proceed_yes_or_no()
     spls = generate_list_spls()
@@ -109,6 +117,7 @@ def main():
     db = two_columns_ordered(db)
     db = create_three_bool_columns(db)
     db = create_column_possibility(db)
+    db = fill_possibility_with_question_mark(db)
     create_csv(db)
     
     

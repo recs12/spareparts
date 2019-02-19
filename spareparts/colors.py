@@ -139,11 +139,11 @@ def colorizing_bin(criteria_1, criteria_2, color):
 def add_colors(selected_file):
         df = pd.read_excel(selected_file)
         wb = xw.Book(selected_file)   
-        sht = wb.sheets[0]
-        return (df,sht)
+        SHEETS = ['garbage','Sheet1']
+        for s in SHEETS:
+                sht = wb.sheets[s]
+                return (df,sht)
 
 if __name__ == '__main__':
     add_colors(selected_file)
 
-#add display ouput for user 
-#add progress bar
