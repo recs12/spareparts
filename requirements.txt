@@ -1,1 +1,6 @@
--e .
+numpy==1.16.1
+pandas==0.24.1
+python-dateutil==2.8.0
+pytz==2018.9
+six==1.12.0
+-e git+https://github.com/recs12/spareparts.git@9049ae8d73f0ef2b37e66eea5744be8da44fe032#egg=spareparts
