@@ -14,6 +14,10 @@ import pandas as pd
 import xlwings as xw
 from spareparts.parameters import *
 from spareparts.filters import autofilter
+from openpyxl import Workbook
+from openpyxl import load_workbook
+from openpyxl.styles import Alignment
+
 
 
 boulonnerie_prp1 = categories['boulonnerie']['prp1']
@@ -34,7 +38,7 @@ def loading_db(path):
         """load the item-level database"""
         df = pd.read_csv(path, dtype={'possibility': str})
         df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
-        df.item_number = df.item_number.astype('int')
+        # df.item_number = df.item_number.astype('int')
         df.item_number = df.item_number.astype(str)
         df.item_number = df.item_number.str.strip()
         df.possibility = df.possibility.astype(str)
@@ -117,7 +121,6 @@ def extract_data(fichier):
     module_number = os.path.splitext(os.path.basename(fichier))[0]
     df['module'] = module_number
     print(f" [+][\t{module_number}\t]")
-    print(df.columns)
     return df
 
 def listing_txt_files(files_path="."):
@@ -157,7 +160,7 @@ def joining_spl_jde(jde, parts):
     """
     jde.item_number = jde.item_number.astype(str)
     spl = parts.join(jde.set_index("item_number"), on='jdelitm').sort_values('module')
-    spl.to_csv('earliest_spl.csv', index=False) ####test to remove
+    # spl.to_csv('earliest_spl.csv', index=False) ####test to remove
     return spl
 
 def creating_part_type_column(spl):
@@ -172,6 +175,17 @@ def creating_drawing_number_column(spl, jde):
     spl['drawing'] = spl.part_number.isin(list_of_drawings)
     return spl
 
+def alignment_column_significance(file_name):
+    new_name = 'auto_with_filters_aligned.xlsx'
+    wb = load_workbook(file_name)
+    for sheet in wb.sheetnames: 
+        ws = wb[sheet]
+        significance_column = ws['F']
+        for cell in significance_column:
+            cell.alignment = Alignment(horizontal='center') 
+    print(f"excel file created: {new_name}")
+    return wb.save()
+
 #*****************filters*********************
 
 def filtering_part_P1_or_A1_format(spl):
@@ -185,10 +199,10 @@ def filtering_nuts(data, criteres=boulonnerie_prp1):
     data_removed = data[data.description_prp1.isin(criteres)]
     return (data_remaining , data_removed)
 
-def filtering_assemblies(data):
-    """filter -> ASSEMBLY (with exceptions -> drawing number)"""
-    data_remaining = data[~((data.unit_of_measure.isna()) & (data.type =='asm') & (data.drawing== False))]
-    data_removed = data[(data.unit_of_measure.isna()) & (data.type =='asm') & (data.drawing== False)]
+def filtering_assemblies(data, asm_exceptions = r"EEG58C6000A-.*"):
+    """filter -> ASSEMBLY (with exceptions)"""
+    data_remaining = data[ ~( (data.unit_of_measure.isna()) & (data.type =='asm') & (~data.part_number.str.contains( asm_exceptions  , regex=True)) )]
+    data_removed = data[ (data.unit_of_measure.isna()) & (data.type =='asm') & (~data.part_number.str.contains( asm_exceptions  , regex=True))]
     return (data_remaining , data_removed)
 
 def filtering_plates(data, criteres=plates_prp1):
@@ -318,8 +332,6 @@ def generating_spl(location_jde, location_files):
     spl = spl.join(db.set_index('item_number'), on='jdelitm')
     spl = creating_part_type_column(spl)
     spl = creating_drawing_number_column(spl, jde)
-
-    
     ###filters###
     spl = filtering_part_P1_or_A1_format(spl);print(filtering_part_P1_or_A1_format.__doc__)
     spl , nuts = filtering_nuts(spl);print(filtering_nuts.__doc__)
@@ -343,18 +355,16 @@ def generating_spl(location_jde, location_files):
     spl , clamps = filtering_clamps(spl);print(filtering_clamps.__doc__)
     spl , quincaillery = filtering_quincaillery(spl);print(filtering_quincaillery.__doc__)
     spl , inside_gripper = filtering_parts_inside_gripper(spl);print(filtering_parts_inside_gripper.__doc__)
-
     #############
-
     groupe_to_concat = [nuts, assemblies, plates, elec, divers, robot, grommet, factory_furniture,industrial, pneumatic, par, timing_belt_sheave, cable_carrier, motor_shrink_disk, gearmotor_servomotor, gearbox, clamps, quincaillery, pneu_frl, pneu_manifold, inside_gripper]
-    
     garbage = pd.concat(groupe_to_concat , ignore_index=True).sort_values('module',ascending=True)
     print("-----------------------------\n"
         f"shape spl:\t{spl.shape[0]}\n"
         f"shape garbage:\t{garbage.shape[0]}"
         "\n-----------------------------")
     creating_excel(spl, garbage ,'auto.xlsx')
-    autofilter('auto.xlsx') 
+    autofilter('auto.xlsx')
+    alignment_column_significance('auto_with_filters.xlsx')
     print(f"excel file created: auto.xlsx")
     
 if __name__ == '__main__':

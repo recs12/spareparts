@@ -19,7 +19,7 @@ boulonnerie_prp1 = categories['boulonnerie']['prp1']
 plates_prp1 =categories['plates']['prp1']
 
 #load the excel file within a varaible
-selected_file = glob('##*.xlsx')[0]
+selected_file = "auto_with_filters_aligned.xlsx"
 
 #list of colors RGB code
 grey_dark       = (170, 170, 170)       #assemblies
@@ -87,63 +87,43 @@ def colorizing_obsolete_usedup(color):
                         d,s = wrapped_function(*args, **kwargs)
                         targeted_index = d.index[d.ST.isin(['O','U'])].tolist()
                         for row in targeted_index:
-                                s.range('J2').rows[row].color = color
+                                cellule = f"J{row+2}" # number 2 added for compensate lapse in excel file
+                                s.range(cellule).color = color
                         return (d,s)
                 return _wrapper
         return _outer_wrapper
 
-def colorizing_FT_RL(color):
+def colorizing_MT_FT_RL(color):
         def _outer_wrapper(wrapped_function):
                 @functools.wraps(wrapped_function)
                 def _wrapper(*args, **kwargs):
                         d,s = wrapped_function(*args, **kwargs)
-                        targeted_index = d.index[d.UOM.isin(['FT','RL'])].tolist()
+                        targeted_index = d.index[d.UOM.isin(['MT','FT','RL'])].tolist()
                         for row in targeted_index:
-                                s.range('A2:T2').expand('down').rows[row].color = color
+                                cellule = f"I{row+2}" # number 2 added for compensate lapse in excel file
+                                s.range(cellule).color = color
                         return (d,s)
                 return _wrapper
         return _outer_wrapper
 
-def colorizing_MT(color):
-        def _outer_wrapper(wrapped_function):
-                @functools.wraps(wrapped_function)
-                def _wrapper(*args, **kwargs):
-                        d,s = wrapped_function(*args, **kwargs)
-                        targeted_index = d.index[d.UOM.isin(['MT'])].tolist()
-                        for row in targeted_index:
-                                s.range('A2:T2').expand('down').rows[row].color = color
-                        return (d,s)
-                return _wrapper
-        return _outer_wrapper
 
-def colorizing_bin(criteria_1, criteria_2, color):
-        def _outer_wrapper(wrapped_function):
-                @functools.wraps(wrapped_function)
-                def _wrapper(*args, **kwargs):
-                        d,s = wrapped_function(*args, **kwargs)
-                        targeted_index = d.index[d.prp1.isin(criteria_1)].tolist()
-                        for row in targeted_index:
-                                s.range('I2').rows[row].color = color
-                        return (d,s)
-                return _wrapper
-        return _outer_wrapper
-
-@colorizing_MT(blue)
+#@colorizing_bin(bin_prp1, bin_prp2 ,pink)
+#@colorizing_boulonnerie(boulonnerie_prp1, red)       
+#@colorizing_plates(plates_prp1, grey)       
+#@colorizing_assemblies(grey_dark)
+# @colorizing_items_electric(electric_prp1, electric_prp2, orange)
 @colorizing_obsolete_usedup(mauve) 
-@colorizing_bin(bin_prp1, bin_prp2 ,pink)
-@colorizing_FT_RL(green)
-@colorizing_items_electric(electric_prp1, electric_prp2, orange)
-@colorizing_boulonnerie(boulonnerie_prp1, red)       
-@colorizing_plates(plates_prp1, grey)       
-@colorizing_assemblies(grey_dark)
-def add_colors(selected_file):
-        df = pd.read_excel(selected_file)
+@colorizing_MT_FT_RL(blue)
+def extraction(file_name , workbook , sht_name ):
+        df = pd.read_excel(file_name , sheet_name=sht_name)
+        sht = workbook.sheets[sht_name]
+        return (df,sht)
+
+def add_colors(selected_file, sheet_spl ):
         wb = xw.Book(selected_file)   
-        SHEETS = ['garbage','Sheet1']
-        for s in SHEETS:
-                sht = wb.sheets[s]
-                return (df,sht)
+        extraction(selected_file, wb ,sheet_spl)
 
 if __name__ == '__main__':
-    add_colors(selected_file)
+        for tab in ['garbage','Sheet1']:
+                add_colors(selected_file, tab)
 
