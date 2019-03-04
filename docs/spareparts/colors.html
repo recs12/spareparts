@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>colors.py</title>
+  <link rel="stylesheet" href="..\pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>colors.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xlwings</span> <span class="kn">as</span> <span class="nn">xw</span>
+<span class="kn">from</span> <span class="nn">spareparts.parameters</span> <span class="kn">import</span> <span class="n">categories</span> 
+
+<span class="n">bin_prp1</span> <span class="o">=</span> <span class="n">categories</span><span class="p">[</span><span class="s1">&#39;bin&#39;</span><span class="p">][</span><span class="s1">&#39;prp1&#39;</span><span class="p">]</span>
+<span class="n">bin_prp2</span> <span class="o">=</span> <span class="n">categories</span><span class="p">[</span><span class="s1">&#39;bin&#39;</span><span class="p">][</span><span class="s1">&#39;prp2&#39;</span><span class="p">]</span>
+<span class="n">electric_prp1</span> <span class="o">=</span> <span class="n">categories</span><span class="p">[</span><span class="s1">&#39;items_electric&#39;</span><span class="p">][</span><span class="s1">&#39;prp1&#39;</span><span class="p">]</span>
+<span class="n">electric_prp2</span> <span class="o">=</span> <span class="n">categories</span><span class="p">[</span><span class="s1">&#39;items_electric&#39;</span><span class="p">][</span><span class="s1">&#39;prp2&#39;</span><span class="p">]</span>
+<span class="n">boulonnerie_prp1</span> <span class="o">=</span> <span class="n">categories</span><span class="p">[</span><span class="s1">&#39;boulonnerie&#39;</span><span class="p">][</span><span class="s1">&#39;prp1&#39;</span><span class="p">]</span>
+<span class="n">plates_prp1</span> <span class="o">=</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;plates&#39;</span><span class="p">][</span><span class="s1">&#39;prp1&#39;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>load the excel file within a varaible</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">selected_file</span> <span class="o">=</span> <span class="s2">&quot;auto_with_filters_aligned.xlsx&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>list of colors RGB code</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">grey_dark</span>       <span class="o">=</span> <span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">)</span>       <span class="c1">#assemblies</span>
+<span class="n">grey</span>            <span class="o">=</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>       <span class="c1">#plates</span>
+<span class="n">red</span>             <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>           <span class="c1">#boulonnerie</span>
+<span class="n">orange</span>          <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span>        <span class="c1">#electric</span>
+<span class="n">mauve</span>           <span class="o">=</span> <span class="p">(</span><span class="mi">157</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>        <span class="c1">#mauve  Item O ou U</span>
+<span class="n">green</span>           <span class="o">=</span> <span class="p">(</span><span class="mi">138</span><span class="p">,</span> <span class="mi">232</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>        <span class="c1">#green  -   Item avec unité de mesure (pas en EA)</span>
+<span class="n">blue</span>            <span class="o">=</span> <span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">106</span><span class="p">,</span> <span class="mi">232</span><span class="p">)</span>        <span class="c1">#blue  -   Item tjrs à revalider</span>
+<span class="n">green</span>           <span class="o">=</span> <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">203</span><span class="p">,</span> <span class="mi">232</span><span class="p">)</span>        <span class="c1">#green  -   Item &quot;item number&quot; non conforme</span>
+<span class="n">pink</span>           <span class="o">=</span> <span class="p">(</span><span class="mi">232</span><span class="p">,</span> <span class="mi">86</span><span class="p">,</span> <span class="mi">113</span><span class="p">)</span>        <span class="c1">#pink  -   bin with all the rest</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">colorizing_assemblies</span><span class="p">(</span><span class="n">color</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">,</span><span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="n">asm_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;UOM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span><span class="o">&amp;</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;asm&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">asm_index</span><span class="p">:</span>
+                                <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="s1">&#39;A2:T2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="s1">&#39;down&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                        <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_wrapper</span>
+        <span class="k">return</span> <span class="n">_outer_wrapper</span>
+
+<span class="k">def</span> <span class="nf">colorizing_plates</span><span class="p">(</span><span class="n">criteria_1</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span>
+                <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">,</span><span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="n">targeted_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">prp1</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">criteria_1</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">targeted_index</span><span class="p">:</span>
+                                <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="s1">&#39;A2:T2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="s1">&#39;down&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                        <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_wrapper</span>
+        <span class="k">return</span> <span class="n">_outer_wrapper</span>
+
+<span class="k">def</span> <span class="nf">colorizing_boulonnerie</span><span class="p">(</span><span class="n">criteria_1</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span>
+                <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">,</span><span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="n">targeted_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">prp1</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">criteria_1</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">targeted_index</span><span class="p">:</span>
+                                <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="s1">&#39;A2:T2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="s1">&#39;down&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                        <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_wrapper</span>
+        <span class="k">return</span> <span class="n">_outer_wrapper</span>
+
+<span class="k">def</span> <span class="nf">colorizing_items_electric</span><span class="p">(</span><span class="n">criteria_1</span><span class="p">,</span> <span class="n">criteria_2</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span>
+                <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">,</span><span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="n">targeted_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">prp1</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">criteria_1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">d</span><span class="o">.</span><span class="n">prp2</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">criteria_2</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">targeted_index</span><span class="p">:</span>
+                                <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="s1">&#39;A2:T2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="s1">&#39;down&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                        <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_wrapper</span>
+        <span class="k">return</span> <span class="n">_outer_wrapper</span>
+
+<span class="k">def</span> <span class="nf">colorizing_obsolete_usedup</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span>
+                <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">,</span><span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="n">targeted_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">ST</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;U&#39;</span><span class="p">])]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">targeted_index</span><span class="p">:</span>
+                                <span class="n">cellule</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;J{row+2}&quot;</span> <span class="c1"># number 2 added for compensate lapse in excel file</span>
+                                <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">cellule</span><span class="p">)</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                        <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_wrapper</span>
+        <span class="k">return</span> <span class="n">_outer_wrapper</span>
+
+<span class="k">def</span> <span class="nf">colorizing_MT_FT_RL</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span>
+                <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                        <span class="n">d</span><span class="p">,</span><span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="n">targeted_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">UOM</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;MT&#39;</span><span class="p">,</span><span class="s1">&#39;FT&#39;</span><span class="p">,</span><span class="s1">&#39;RL&#39;</span><span class="p">])]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">targeted_index</span><span class="p">:</span>
+                                <span class="n">cellule</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;I{row+2}&quot;</span> <span class="c1"># number 2 added for compensate lapse in excel file</span>
+                                <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">cellule</span><span class="p">)</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                        <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_wrapper</span>
+        <span class="k">return</span> <span class="n">_outer_wrapper</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>@colorizing_bin(bin_prp1, bin_prp2 ,pink)
+@colorizing_boulonnerie(boulonnerie_prp1, red)     <br />
+@colorizing_plates(plates_prp1, grey)     <br />
+@colorizing_assemblies(grey_dark)
+@colorizing_items_electric(electric_prp1, electric_prp2, orange)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@colorizing_obsolete_usedup</span><span class="p">(</span><span class="n">mauve</span><span class="p">)</span> 
+<span class="nd">@colorizing_MT_FT_RL</span><span class="p">(</span><span class="n">blue</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">extraction</span><span class="p">(</span><span class="n">file_name</span> <span class="p">,</span> <span class="n">workbook</span> <span class="p">,</span> <span class="n">sht_name</span> <span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file_name</span> <span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="n">sht_name</span><span class="p">)</span>
+        <span class="n">sht</span> <span class="o">=</span> <span class="n">workbook</span><span class="o">.</span><span class="n">sheets</span><span class="p">[</span><span class="n">sht_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">sht</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">add_colors</span><span class="p">(</span><span class="n">selected_file</span><span class="p">,</span> <span class="n">sheet_spl</span> <span class="p">):</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">xw</span><span class="o">.</span><span class="n">Book</span><span class="p">(</span><span class="n">selected_file</span><span class="p">)</span>   
+        <span class="n">extraction</span><span class="p">(</span><span class="n">selected_file</span><span class="p">,</span> <span class="n">wb</span> <span class="p">,</span><span class="n">sheet_spl</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;garbage&#39;</span><span class="p">,</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">]:</span>
+                <span class="n">add_colors</span><span class="p">(</span><span class="n">selected_file</span><span class="p">,</span> <span class="n">tab</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

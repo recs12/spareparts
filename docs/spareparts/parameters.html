@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>parameters.py</title>
+  <link rel="stylesheet" href="..\pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>parameters.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="n">JDEPATH</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Excel extracted settings</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Item Number&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Drawing&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Quantity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Equipment&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Module&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Level of significance&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;Category&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Other Information&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;UOM&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ST&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Description 1&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;Description 2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Search Text&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unit Cost&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Extended Cost&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jdelitm&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;prp1&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;prp2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;file_name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;drawing&quot;</span>
+<span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>equivalent -&gt;  Excel position &amp; columns name of the data
+e.g. the data in excel column &lsquo;A2&rsquo; is from  spl.part_number</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">dict_header</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;A2&#39;</span><span class="p">:</span><span class="s1">&#39;part_number&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;B2&#39;</span><span class="p">:</span><span class="s1">&#39;drawing_number&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C2&#39;</span><span class="p">:</span><span class="s1">&#39;quantity&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;E2&#39;</span><span class="p">:</span><span class="s1">&#39;module&#39;</span><span class="p">,</span>    
+    <span class="s1">&#39;F2&#39;</span><span class="p">:</span><span class="s1">&#39;possibility&#39;</span><span class="p">,</span>    
+    <span class="s1">&#39;I2&#39;</span><span class="p">:</span><span class="s1">&#39;unit_of_measure&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;J2&#39;</span><span class="p">:</span><span class="s1">&#39;stocking_type&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;K2&#39;</span><span class="p">:</span><span class="s1">&#39;description_1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;L2&#39;</span><span class="p">:</span><span class="s1">&#39;description_2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;M2&#39;</span><span class="p">:</span><span class="s1">&#39;search_text&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;N2&#39;</span><span class="p">:</span><span class="s1">&#39;unit_cost&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;P2&#39;</span><span class="p">:</span><span class="s1">&#39;jdelitm&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Q2&#39;</span><span class="p">:</span><span class="s1">&#39;description_prp1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;R2&#39;</span><span class="p">:</span><span class="s1">&#39;description_prp2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;S2&#39;</span><span class="p">:</span><span class="s1">&#39;file_name&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;T2&#39;</span><span class="p">:</span><span class="s1">&#39;type&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;U2&#39;</span><span class="p">:</span><span class="s1">&#39;drawing&#39;</span>
+<span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>color cells</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">color_bg</span> <span class="o">=</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>&lsquo;I:M&rsquo; : (235, 247, 133), #yellow</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="s1">&#39;A1:C1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">203</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="c1">#blue</span>
+    <span class="s1">&#39;D1:H1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">183</span><span class="p">,</span> <span class="mi">185</span><span class="p">,</span> <span class="mi">188</span><span class="p">),</span> <span class="c1">#grey</span>
+    <span class="s1">&#39;I1:M1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="mi">216</span><span class="p">,</span> <span class="mi">117</span><span class="p">),</span> <span class="c1">#green</span>
+    <span class="s1">&#39;N1:R1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="c1">#red</span>
+<span class="p">}</span>
+
+<span class="n">categories</span> <span class="o">=</span> <span class="p">{</span>
+<span class="s1">&#39;plates&#39;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;prp1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Aluminium&#39;</span><span class="p">,</span><span class="s1">&#39;Stainless Steel&#39;</span><span class="p">,</span><span class="s1">&#39;Steel&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;prp2&#39;</span><span class="p">:[]</span>
+    <span class="p">}</span>
+<span class="p">,</span>
+<span class="s1">&#39;boulonnerie&#39;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;prp1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Inch Fastener&#39;</span><span class="p">,</span><span class="s1">&#39;Inch Hardware&#39;</span><span class="p">,</span><span class="s1">&#39;Metric Fastener&#39;</span><span class="p">,</span><span class="s1">&#39;Metric Hardware&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;prp2&#39;</span><span class="p">:[]</span>
+    <span class="p">}</span>
+<span class="p">,</span>
+<span class="s1">&#39;bin&#39;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;prp1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sign &amp; Label&#39;</span><span class="p">,</span><span class="s1">&#39;Synthetic Product&#39;</span><span class="p">,</span><span class="s1">&#39;Plumbing Hardware&#39;</span><span class="p">,</span><span class="s1">&#39;Pièce Manufacturée Magasin&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;prp2&#39;</span><span class="p">:</span> <span class="p">[]</span>
+    <span class="p">}</span>
+<span class="p">,</span>
+<span class="s1">&#39;items_electric&#39;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;prp1&#39;</span><span class="p">:[</span><span class="s1">&#39;Electric Component&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;prp2&#39;</span><span class="p">:[</span><span class="s1">&#39;Cable Tray &amp; Cable Carrier&#39;</span><span class="p">,</span> <span class="s1">&#39;Conduits &amp; fittings&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>parts you find in a gripper that does not need to be in the spl</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">contents_of_gripper</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PT1124830&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;PT0078604&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;PT0078603&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24104091&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24101598&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24101597&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;171257&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;171259&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;171256&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24100056&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;171255&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;PT0078602&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;PT0078601&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;EEG58C7007P-1&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24100360&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;EEG58C6002P-6&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;54010220&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24300030&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24104854&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24104591&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;24104548&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;162922&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;122896&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;122857&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;162925_EEG58C&quot;</span><span class="p">]</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
