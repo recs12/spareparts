@@ -4,13 +4,11 @@ modules:
 ask confirmation : level? before proceeding 
 ask confirmation : colors? before proceeding 
 
-1 . add a second sheet with removed - third sheet with legend
+1 . third sheet with legend
 
-2. modification - bleu - mauve selection (no color the all row)
+2. modification -yellow electric
 
 3. ability to compare 2  SPL new column _> same- missing
-
-4. add rolling data filter.
 
 5.price x quantity macro ()
 
