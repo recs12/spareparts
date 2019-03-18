@@ -111,7 +111,7 @@ def colorizing_MT_FT_RL(color):
 #@colorizing_boulonnerie(boulonnerie_prp1, red)       
 #@colorizing_plates(plates_prp1, grey)       
 #@colorizing_assemblies(grey_dark)
-# @colorizing_items_electric(electric_prp1, electric_prp2, orange)
+@colorizing_items_electric(electric_prp1, electric_prp2, orange)
 @colorizing_obsolete_usedup(mauve) 
 @colorizing_MT_FT_RL(blue)
 def extraction(file_name , workbook , sht_name ):
@@ -122,8 +122,9 @@ def extraction(file_name , workbook , sht_name ):
 def add_colors(selected_file, sheet_spl ):
         wb = xw.Book(selected_file)   
         extraction(selected_file, wb ,sheet_spl)
+        return wb
 
 if __name__ == '__main__':
         for tab in ['garbage','Sheet1']:
-                add_colors(selected_file, tab)
-
+                wb = add_colors(selected_file, tab)
+        wb.save('auto_with_filters_aligned_colored.xlsx')

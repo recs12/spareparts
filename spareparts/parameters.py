@@ -73,7 +73,7 @@ categories = {
 ,
 'items_electric' : {
     'prp1':['Electric Component'],
-    'prp2':['Cable Tray & Cable Carrier', 'Conduits & fittings']
+    'prp2':[]
     }
 }
 
