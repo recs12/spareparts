@@ -1,0 +1,234 @@
+************* Module spareparts.colors
+colors.py:12:44: C0303: Trailing whitespace (trailing-whitespace)
+colors.py:19:12: C0326: Exactly one space required after assignment
+plates_prp1 =categories['plates']['prp1']
+            ^ (bad-whitespace)
+colors.py:23:8: C0326: Exactly one space required around assignment
+NEW_FILE='auto_with_filters_aligned_colored.xlsx'
+        ^ (bad-whitespace)
+colors.py:26:16: C0326: Exactly one space required before assignment
+grey_dark       = (170, 170, 170)       #assemblies
+                ^ (bad-whitespace)
+colors.py:27:16: C0326: Exactly one space required before assignment
+grey            = (150, 150, 150)       #plates
+                ^ (bad-whitespace)
+colors.py:28:16: C0326: Exactly one space required before assignment
+red             = (255, 0, 0)           #boulonnerie
+                ^ (bad-whitespace)
+colors.py:29:16: C0326: Exactly one space required before assignment
+orange          = (255, 145, 36)        #electric
+                ^ (bad-whitespace)
+colors.py:30:16: C0326: Exactly one space required before assignment
+mauve           = (157, 46, 255)        #mauve  Item O ou U
+                ^ (bad-whitespace)
+colors.py:31:16: C0326: Exactly one space required before assignment
+green           = (138, 232, 14)        #green  -   Item avec unité de mesure (pas en EA)
+                ^ (bad-whitespace)
+colors.py:32:16: C0326: Exactly one space required before assignment
+blue            = (52, 106, 232)        #blue  -   Item tjrs à revalider
+                ^ (bad-whitespace)
+colors.py:33:16: C0326: Exactly one space required before assignment
+green           = (48, 203, 232)        #green  -   Item "item number" non conforme
+                ^ (bad-whitespace)
+colors.py:34:15: C0326: Exactly one space required before assignment
+pink           = (232, 86, 113)        #pink  -   bin with all the rest
+               ^ (bad-whitespace)
+colors.py:37:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:38:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:39:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:40:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:40:25: C0326: Exactly one space required after comma
+                        d,s = wrapped_function(*args, **kwargs)
+                         ^ (bad-whitespace)
+colors.py:41:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:41:72: C0326: Exactly one space required around comparison
+                        asm_index = d.index[(d['UOM'].isna())&(d['Type']=='asm')].tolist()
+                                                                        ^^ (bad-whitespace)
+colors.py:42:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:43:0: W0311: Bad indentation. Found 32 spaces, expected 16 (bad-indentation)
+colors.py:44:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:44:33: C0326: Exactly one space required after comma
+                        return (d,s)
+                                 ^ (bad-whitespace)
+colors.py:45:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:46:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:49:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:50:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:51:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:52:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:52:25: C0326: Exactly one space required after comma
+                        d,s = wrapped_function(*args, **kwargs)
+                         ^ (bad-whitespace)
+colors.py:53:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:54:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:55:0: W0311: Bad indentation. Found 32 spaces, expected 16 (bad-indentation)
+colors.py:56:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:56:33: C0326: Exactly one space required after comma
+                        return (d,s)
+                                 ^ (bad-whitespace)
+colors.py:57:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:58:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:61:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:62:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:63:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:64:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:64:25: C0326: Exactly one space required after comma
+                        d,s = wrapped_function(*args, **kwargs)
+                         ^ (bad-whitespace)
+colors.py:65:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:66:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:67:0: W0311: Bad indentation. Found 32 spaces, expected 16 (bad-indentation)
+colors.py:68:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:68:33: C0326: Exactly one space required after comma
+                        return (d,s)
+                                 ^ (bad-whitespace)
+colors.py:69:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:70:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:73:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:74:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:75:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:76:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:76:25: C0326: Exactly one space required after comma
+                        d,s = wrapped_function(*args, **kwargs)
+                         ^ (bad-whitespace)
+colors.py:77:0: C0301: Line too long (108/100) (line-too-long)
+colors.py:77:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:78:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:79:0: W0311: Bad indentation. Found 32 spaces, expected 16 (bad-indentation)
+colors.py:80:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:80:33: C0326: Exactly one space required after comma
+                        return (d,s)
+                                 ^ (bad-whitespace)
+colors.py:81:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:82:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:85:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:86:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:87:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:88:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:88:25: C0326: Exactly one space required after comma
+                        d,s = wrapped_function(*args, **kwargs)
+                         ^ (bad-whitespace)
+colors.py:89:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:89:63: C0326: Exactly one space required after comma
+                        targeted_index = d.index[d.ST.isin(['O','U'])].tolist()
+                                                               ^ (bad-whitespace)
+colors.py:90:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:91:0: C0301: Line too long (105/100) (line-too-long)
+colors.py:91:0: W0311: Bad indentation. Found 32 spaces, expected 16 (bad-indentation)
+colors.py:92:0: W0311: Bad indentation. Found 32 spaces, expected 16 (bad-indentation)
+colors.py:93:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:93:33: C0326: Exactly one space required after comma
+                        return (d,s)
+                                 ^ (bad-whitespace)
+colors.py:94:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:95:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:98:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:99:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:100:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:101:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:101:25: C0326: Exactly one space required after comma
+                        d,s = wrapped_function(*args, **kwargs)
+                         ^ (bad-whitespace)
+colors.py:102:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:102:65: C0326: Exactly one space required after comma
+                        targeted_index = d.index[d.UOM.isin(['MT','FT','RL'])].tolist()
+                                                                 ^ (bad-whitespace)
+colors.py:102:70: C0326: Exactly one space required after comma
+                        targeted_index = d.index[d.UOM.isin(['MT','FT','RL'])].tolist()
+                                                                      ^ (bad-whitespace)
+colors.py:103:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:104:0: C0301: Line too long (105/100) (line-too-long)
+colors.py:104:0: W0311: Bad indentation. Found 32 spaces, expected 16 (bad-indentation)
+colors.py:105:0: W0311: Bad indentation. Found 32 spaces, expected 16 (bad-indentation)
+colors.py:106:0: W0311: Bad indentation. Found 24 spaces, expected 12 (bad-indentation)
+colors.py:106:33: C0326: Exactly one space required after comma
+                        return (d,s)
+                                 ^ (bad-whitespace)
+colors.py:107:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:108:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:112:47: C0303: Trailing whitespace (trailing-whitespace)
+colors.py:113:38: C0303: Trailing whitespace (trailing-whitespace)
+colors.py:116:34: C0303: Trailing whitespace (trailing-whitespace)
+colors.py:118:25: C0326: No space allowed before comma
+def extraction(file_name , workbook , sht_name ):
+                         ^ (bad-whitespace)
+colors.py:118:36: C0326: No space allowed before comma
+def extraction(file_name , workbook , sht_name ):
+                                    ^ (bad-whitespace)
+colors.py:118:47: C0326: No space allowed before bracket
+def extraction(file_name , workbook , sht_name ):
+                                               ^ (bad-whitespace)
+colors.py:119:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:119:37: C0326: No space allowed before comma
+        df = pd.read_excel(file_name , sheet_name=sht_name)
+                                     ^ (bad-whitespace)
+colors.py:120:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:121:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:121:18: C0326: Exactly one space required after comma
+        return (df,sht)
+                  ^ (bad-whitespace)
+colors.py:123:40: C0326: No space allowed before bracket
+def add_colors(selected_file, sheet_spl ):
+                                        ^ (bad-whitespace)
+colors.py:124:35: C0303: Trailing whitespace (trailing-whitespace)
+colors.py:124:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:125:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:125:37: C0326: No space allowed before comma
+        extraction(selected_file, wb ,sheet_spl)
+                                     ^ (bad-whitespace)
+colors.py:125:37: C0326: Exactly one space required after comma
+        extraction(selected_file, wb ,sheet_spl)
+                                     ^ (bad-whitespace)
+colors.py:126:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:129:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:129:29: C0326: Exactly one space required after comma
+        for tab in ['garbage','Sheet1']:
+                             ^ (bad-whitespace)
+colors.py:130:0: W0311: Bad indentation. Found 16 spaces, expected 8 (bad-indentation)
+colors.py:131:0: W0311: Bad indentation. Found 8 spaces, expected 4 (bad-indentation)
+colors.py:1:0: C0112: Empty module docstring (empty-docstring)
+colors.py:14:0: C0103: Constant name "bin_prp1" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:15:0: C0103: Constant name "bin_prp2" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:16:0: C0103: Constant name "electric_prp1" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:17:0: C0103: Constant name "electric_prp2" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:18:0: C0103: Constant name "boulonnerie_prp1" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:19:0: C0103: Constant name "plates_prp1" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:26:0: C0103: Constant name "grey_dark" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:27:0: C0103: Constant name "grey" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:28:0: C0103: Constant name "red" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:29:0: C0103: Constant name "orange" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:30:0: C0103: Constant name "mauve" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:31:0: C0103: Constant name "green" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:32:0: C0103: Constant name "blue" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:33:0: C0103: Constant name "green" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:34:0: C0103: Constant name "pink" doesn't conform to UPPER_CASE naming style (invalid-name)
+colors.py:36:0: C0111: Missing function docstring (missing-docstring)
+colors.py:40:24: C0103: Variable name "d" doesn't conform to snake_case naming style (invalid-name)
+colors.py:40:26: C0103: Variable name "s" doesn't conform to snake_case naming style (invalid-name)
+colors.py:48:0: C0111: Missing function docstring (missing-docstring)
+colors.py:52:24: C0103: Variable name "d" doesn't conform to snake_case naming style (invalid-name)
+colors.py:52:26: C0103: Variable name "s" doesn't conform to snake_case naming style (invalid-name)
+colors.py:60:0: C0111: Missing function docstring (missing-docstring)
+colors.py:64:24: C0103: Variable name "d" doesn't conform to snake_case naming style (invalid-name)
+colors.py:64:26: C0103: Variable name "s" doesn't conform to snake_case naming style (invalid-name)
+colors.py:72:0: C0111: Missing function docstring (missing-docstring)
+colors.py:76:24: C0103: Variable name "d" doesn't conform to snake_case naming style (invalid-name)
+colors.py:76:26: C0103: Variable name "s" doesn't conform to snake_case naming style (invalid-name)
+colors.py:84:0: C0111: Missing function docstring (missing-docstring)
+colors.py:88:24: C0103: Variable name "d" doesn't conform to snake_case naming style (invalid-name)
+colors.py:88:26: C0103: Variable name "s" doesn't conform to snake_case naming style (invalid-name)
+colors.py:97:0: C0103: Function name "colorizing_MT_FT_RL" doesn't conform to snake_case naming style (invalid-name)
+colors.py:97:0: C0111: Missing function docstring (missing-docstring)
+colors.py:101:24: C0103: Variable name "d" doesn't conform to snake_case naming style (invalid-name)
+colors.py:101:26: C0103: Variable name "s" doesn't conform to snake_case naming style (invalid-name)
+colors.py:118:0: C0111: Missing function docstring (missing-docstring)
+colors.py:119:8: C0103: Variable name "df" doesn't conform to snake_case naming style (invalid-name)
+colors.py:123:0: C0111: Missing function docstring (missing-docstring)
+colors.py:124:8: W0621: Redefining name 'wb' from outer scope (line 130) (redefined-outer-name)
+colors.py:124:8: C0103: Variable name "wb" doesn't conform to snake_case naming style (invalid-name)
+colors.py:8:0: W0611: Unused glob imported from glob (unused-import)
+colors.py:9:0: W0611: Unused import os (unused-import)
+
+---------------------------------------------------------------------
+Your code has been rated at -6.19/10 (previous run: 10.00/10, -16.19)
+

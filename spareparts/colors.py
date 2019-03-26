@@ -9,7 +9,7 @@ from glob import glob
 import os
 import pandas as pd
 import xlwings as xw
-from spareparts.parameters import categories 
+from spareparts.parameters import categories
 
 bin_prp1 = categories['bin']['prp1']
 bin_prp2 = categories['bin']['prp2']
@@ -19,7 +19,8 @@ boulonnerie_prp1 = categories['boulonnerie']['prp1']
 plates_prp1 =categories['plates']['prp1']
 
 #load the excel file within a varaible
-selected_file = "auto_with_filters_aligned.xlsx"
+SELECTED_FILE = "auto_with_filters_aligned.xlsx"
+NEW_FILE='auto_with_filters_aligned_colored.xlsx'
 
 #list of colors RGB code
 grey_dark       = (170, 170, 170)       #assemblies
@@ -107,12 +108,11 @@ def colorizing_MT_FT_RL(color):
         return _outer_wrapper
 
 
-#@colorizing_bin(bin_prp1, bin_prp2 ,pink)
-#@colorizing_boulonnerie(boulonnerie_prp1, red)       
-#@colorizing_plates(plates_prp1, grey)       
+#@colorizing_boulonnerie(boulonnerie_prp1, red)
+#@colorizing_plates(plates_prp1, grey)
 #@colorizing_assemblies(grey_dark)
 @colorizing_items_electric(electric_prp1, electric_prp2, orange)
-@colorizing_obsolete_usedup(mauve) 
+@colorizing_obsolete_usedup(mauve)
 @colorizing_MT_FT_RL(blue)
 def extraction(file_name , workbook , sht_name ):
         df = pd.read_excel(file_name , sheet_name=sht_name)
@@ -120,11 +120,11 @@ def extraction(file_name , workbook , sht_name ):
         return (df,sht)
 
 def add_colors(selected_file, sheet_spl ):
-        wb = xw.Book(selected_file)   
+        wb = xw.Book(selected_file)
         extraction(selected_file, wb ,sheet_spl)
         return wb
 
 if __name__ == '__main__':
         for tab in ['garbage','Sheet1']:
-                wb = add_colors(selected_file, tab)
-        wb.save('auto_with_filters_aligned_colored.xlsx')
+                wb = add_colors(SELECTED_FILE, tab)
+        wb.save(NEW_FILE)

@@ -4,7 +4,6 @@
 Create a sparepart list from files, download from solidedge ST7.
 """
 
-# import click
 import os
 import sys
 from glob import glob
@@ -13,11 +12,10 @@ import numpy as np
 import pandas as pd
 import xlwings as xw
 from spareparts.parameters import *
-from spareparts.filters import autofilter
 from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
-
+from openpyxl import load_workbook
 
 
 boulonnerie_prp1 = categories['boulonnerie']['prp1']
@@ -102,11 +100,11 @@ def extract_data(fichier):
     #add try and except
     df = pd.read_table(fichier,
                     delimiter='\t',
-                    skiprows=[0,2], 
+                    skiprows=[0,2],
                     header=1,
                     names= ["Part Number","Revision","DSC_A", "JDELITM","DIM","Quantity", "File Name"],
-                    index_col=False,             
-                    encoding='latin3', 
+                    index_col=False,
+                    encoding='latin3',
                     error_bad_lines=False,
                     na_values="-"
                    )
@@ -137,16 +135,16 @@ def creating_excel(df, df_removed, given_name_xlsx):
     #color cells
     sht.range('A1:R1').api.Font.Bold = True #bold first row
     for rang,color in color_bg.items():
-        xw.Range(rang).color = color 
+        xw.Range(rang).color = color
     for colum,data in dict_header.items():
         sht.range(colum).options(index=False, header=False).value = df[data]
     sht.autofit()
     sht2 = wb.sheets.add('garbage')
     sht2.range('A1').value = col
     #color cells
-    sht2.range('A1:R1').api.Font.Bold = True #bold first row 
+    sht2.range('A1:R1').api.Font.Bold = True #bold first row
     for rang,color in color_bg.items():
-        xw.Range(rang).color = color 
+        xw.Range(rang).color = color
     for colum,data in dict_header.items():
         sht2.range(colum).options(index=False, header=False).value = df_removed[data]
     sht2.autofit()
@@ -178,13 +176,26 @@ def creating_drawing_number_column(spl, jde):
 def alignment_column_significance(file_name):
     new_name = 'auto_with_filters_aligned.xlsx'
     wb = load_workbook(file_name)
-    for sheet in wb.sheetnames: 
+    for sheet in wb.sheetnames:
         ws = wb[sheet]
         significance_column = ws['F']
         for cell in significance_column:
-            cell.alignment = Alignment(horizontal='center') 
+            cell.alignment = Alignment(horizontal='center')
     print(f"excel file created: {new_name}")
     return wb.save(new_name)
+
+
+
+def autofilter(file_name):
+    wb = load_workbook(file_name)
+    for s in wb.sheetnames:
+        ws = wb[s]
+        MAX_ = ws.max_row
+        field = (f"A1:T{MAX_}")
+        ws.auto_filter.ref = field
+    wb.save("auto_with_filters.xlsx")
+    print(f"excel file created: auto_with_filters.xlsx")
+
 
 #*****************filters*********************
 
@@ -328,7 +339,7 @@ def generating_spl(location_jde, location_files):
     files_list = (file for file in listing_txt_files(location_files))
     parts = pd.concat([extract_data(file) for file in files_list], ignore_index=True)
     spl = joining_spl_jde(jde, parts)
-    db = loading_db('db.csv') 
+    db = loading_db('db.csv')
     spl = spl.join(db.set_index('item_number'), on='jdelitm')
     spl = creating_part_type_column(spl)
     spl = creating_drawing_number_column(spl, jde)
@@ -366,7 +377,7 @@ def generating_spl(location_jde, location_files):
     autofilter('auto.xlsx')
     alignment_column_significance('auto_with_filters.xlsx')
     print(f"excel file created: auto.xlsx")
-    
+
 if __name__ == '__main__':
     generating_spl(JDEPATH ,".")
 

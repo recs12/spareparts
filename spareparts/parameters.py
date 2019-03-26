@@ -6,18 +6,18 @@ col = ["Item Number",
         "Quantity",
         "Equipment",
         "Module",
-        "Level of significance", 
+        "Level of significance",
         "Category",
         "Other Information",
         "UOM",
         "ST",
-        "Description 1", 
+        "Description 1",
         "Description 2",
         "Search Text",
         "Unit Cost",
         "Extended Cost",
         "jdelitm",
-        "prp1", 
+        "prp1",
         "prp2",
         "file_name",
         "Type",
@@ -27,11 +27,11 @@ col = ["Item Number",
 #equivalent ->  Excel position & columns name of the data
 #e.g. the data in excel column 'A2' is from  spl.part_number
 dict_header = {
-    'A2':'part_number',
-    'B2':'drawing_number',
-    'C2':'quantity',
-    'E2':'module',    
-    'F2':'possibility',    
+    'A2':'part_number', #"Item Number"
+    'B2':'drawing_number', #"Drawing"
+    'C2':'quantity', #"Quantity"
+    'E2':'module',
+    'F2':'possibility',#"Level of significance"
     'I2':'unit_of_measure',
     'J2':'stocking_type',
     'K2':'description_1',
@@ -55,27 +55,6 @@ color_bg = {
     'N1:R1': (122, 100, 100) #red
 }
 
-categories = {
-'plates' : {
-    'prp1': ['Aluminium','Stainless Steel','Steel'],
-    'prp2':[]
-    }
-,
-'boulonnerie' : {
-    'prp1': ['Inch Fastener','Inch Hardware','Metric Fastener','Metric Hardware'],
-    'prp2':[]
-    }
-,
-'bin' : {
-    'prp1': ['Sign & Label','Synthetic Product','Plumbing Hardware','Pièce Manufacturée Magasin'],
-    'prp2': []
-    }
-,
-'items_electric' : {
-    'prp1':['Electric Component'],
-    'prp2':[]
-    }
-}
 
 #parts you find in a gripper that does not need to be in the spl
 contents_of_gripper = ["PT1124830",
@@ -103,3 +82,25 @@ contents_of_gripper = ["PT1124830",
                         "122896",
                         "122857",
                         "162925_EEG58C"]
+
+categories = {
+'plates' : {
+    'prp1': ['Aluminium','Stainless Steel','Steel'],
+    'prp2':[]
+    }
+,
+'boulonnerie' : {
+    'prp1': ['Inch Fastener','Inch Hardware','Metric Fastener','Metric Hardware'],
+    'prp2':[]
+    }
+,
+'bin' : {
+    'prp1': ['Sign & Label','Synthetic Product','Plumbing Hardware','Pièce Manufacturée Magasin'],
+    'prp2': []
+    }
+,
+'items_electric' : {
+    'prp1':['Electric Component'],
+    'prp2':[]
+    }
+}
