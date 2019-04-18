@@ -29,7 +29,7 @@ import pandas as pd
 def proceed_yes_or_no():
     """Gets and prints the spreadsheet's header columns
 
-    Parameters
+    settings
     ----------
     file_loc : str
         The file location of the spreadsheet
