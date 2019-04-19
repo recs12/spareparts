@@ -1,8 +1,5 @@
 #!python3
 # -*- coding: utf-8 -*-
-"""
-
-"""
 
 import functools
 from glob import glob
@@ -11,24 +8,20 @@ import pandas as pd
 import xlwings as xw
 from spareparts.lib.settings import *
 
-#load the excel file within a varaible
-SELECTED_FILE = "auto_with_filters_aligned.xlsx"
-NEW_FILE='auto_with_filters_aligned_colored.xlsx'
-
 #list of colors RGB code
 orange = (255, 145, 36)        #electric
-mauve = (157, 46, 255)        #mauve  Item O ou U
-blue = (52, 106, 232)        #blue  -   Item tjrs à revalider
+mauve  = (157, 46, 255)        #mauve  Item O ou U
+blue   = (52, 106, 232)        #blue  -   Item tjrs à revalider
 
-
-def colorizing_items_electric(criteria_1, criteria_2, color):
+def colorizing_items_electric(prp1, color):
         def _outer_wrapper(wrapped_function):
                 @functools.wraps(wrapped_function)
                 def _wrapper(*args, **kwargs):
                         d,s = wrapped_function(*args, **kwargs)
-                        targeted_index = d.index[d.prp1.isin(criteria_1) & d.prp2.isin(criteria_2)].tolist()
+                        targeted_index = d.index[d.prp1.isin(prp1)].tolist()
                         for row in targeted_index:
-                                s.range('A2:T2').expand('down').rows[row].color = color
+                                cellule = f"A{row+2}:U{row+2}" # number 2 added for compensate lapse in excel file
+                                s.range(cellule).color = color
                         return (d,s)
                 return _wrapper
         return _outer_wrapper
@@ -59,8 +52,7 @@ def colorizing_MT_FT_RL(color):
                 return _wrapper
         return _outer_wrapper
 
-
-@colorizing_items_electric(electric_prp1, electric_prp2, orange)
+@colorizing_items_electric(electric_prp1, orange)
 @colorizing_obsolete_usedup(mauve)
 @colorizing_MT_FT_RL(blue)
 def extraction(file_name , workbook , sht_name ):
@@ -73,7 +65,10 @@ def add_colors(selected_file, sheet_spl ):
         extraction(selected_file, wb ,sheet_spl)
         return wb
 
-if __name__ == '__main__':
-        for tab in ['garbage','Sheet1']:
-                wb = add_colors(SELECTED_FILE, tab)
-        wb.save(NEW_FILE)
+def color_coding(args, selected_file, new_file):
+        for tab in args:
+                wb = add_colors(selected_file, tab)
+        wb.save(new_file)
+
+
+

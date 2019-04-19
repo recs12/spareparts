@@ -60,18 +60,18 @@ def extract_jde(location_jde):
     print(df.columns)
     return df
 
-def load_jde_data(location_jde):
+def load_jde_data(location_jde, path_to_temp):
     """"""
-    if os.path.exists("temporary_jde.csv"):
+    if os.path.exists(path_to_temp):
         answer = input("Do you want to load the temporary jde? (fast but not recommended) \n Proceed ([y]/n) ?:")
         if answer in ['yes','y','YES','Y']:
-            jde_temp = pd.read_csv("temporary_jde.csv")
+            jde_temp = pd.read_csv(path_to_temp)
             return jde_temp
         else:
             sys.exit()
     else:
         jde_data = extract_jde(location_jde)
-        jde_data.to_csv("temporary_jde.csv", index=False)
+        jde_data.to_csv(path_to_temp, index=False)
         return jde_data
 
 def extract_data(fichier):
@@ -86,7 +86,7 @@ def extract_data(fichier):
                     encoding='latin3',
                     error_bad_lines=False,
                     na_values="-"
-                   )
+    )
     #clean the columns
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     df['jdelitm'] = df['jdelitm'].str.strip()

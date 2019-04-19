@@ -83,6 +83,17 @@ contents_of_gripper = ["PT1124830",
                         "122857",
                         "162925_EEG58C",
 ]
+#tabs in the excel file
+TABS = ['garbage','Sheet1']
+#File names 
+output_1 = 'auto.xlsx'
+output_2 = 'auto_with_filters.xlsx'
+output_3 = 'auto_with_filters_aligned.xlsx'
+output_4 = 'auto_colored.xlsx'
+#
+#
+#
+#-----FILTRES FOR SPL-------------------- 
 #bolts arguments in prp1
 boulonnerie_prp1 = ['Inch Fastener','Inch Hardware','Metric Fastener','Metric Hardware']
 #prp1 arguments 
