@@ -48,3 +48,5 @@ if __name__ == '__main__':
 #TODO: add jde data field to compare report "difference.txt". (merge function)
 #TODO: add documentation code (pycco)
 #TODO: merge autofilter + alignment_column_significance step
+#TODO: replace 123456_C01 by 123456
+

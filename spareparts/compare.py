@@ -1,13 +1,12 @@
 #! python3
 #2019-03-27 by recs
 # ===check the current owner of type licenses===
-#
+
 import click
 import pandas as pd
 
-# p = Path('.')
-# list_of_spls = [f.name for f in p.glob('*.xls*') if not f.name.startswith('~')]
-
+#Path to temporary_jde.csv in windows OS.
+path_to_jde = r"C:\ProgramData\Spareparts\temporary_jde.csv"
 
 def extract_items_auto(file):
     """
@@ -40,7 +39,16 @@ def parsing_items(spl):
         return extract_items_auto(name_file)
     else:
         print(f'[Warning] file name: {spl} not reconized, file should start with auto.. or std..' )
-    
+
+def joining_spl_jde(jde, parts):
+    jde.item_number = jde.item_number.astype(str)
+    spl = parts.join(jde.set_index("item_number"), on='item_number')
+    return spl
+
+def load_jde_data():
+    jde_temp = pd.read_csv(path_to_jde)
+    return jde_temp
+
 def delta(spl1, spl2):
     return (
         sorted(list(parsing_items(spl1) - parsing_items(spl2)))
@@ -52,10 +60,10 @@ def delta(spl1, spl2):
 def main(spl1, spl2):
     click.echo(spl1)
     click.echo(spl2)
-    s = pd.Series(
-        delta(spl1, spl2)
-    )
-    s.to_csv('difference.txt', index=False)
+    df = pd.DataFrame(delta(spl1, spl2), columns =["item_number"])
+    jde = load_jde_data()
+    parts = joining_spl_jde(jde, df)
+    parts.to_csv('difference.csv', index=False)
 
 if __name__ == '__main__':
     main()

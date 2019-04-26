@@ -10,9 +10,7 @@ def keep_item(regx):
             spl, garb, reloc = wrapped_function(*args, **kwargs)
             reloc = garb[garb.part_number.str.contains(regx, na=False, regex=True)]
             garb = garb[~garb.part_number.str.contains(regx, na=False, regex=True)]
-         
             spl = pd.concat([spl, reloc], ignore_index=True, sort=False)
-
             return (spl, garb, reloc)
         return _wrapper
     return _outer_wrapper

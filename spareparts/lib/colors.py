@@ -7,7 +7,9 @@ import os
 import pandas as pd
 import xlwings as xw
 from spareparts.lib.settings import *
+from spareparts.lib.filtrate import *
 
+electric_prp1 = ['Electric Component']
 #list of colors RGB code
 orange = (255, 145, 36)        #electric
 mauve  = (157, 46, 255)        #mauve  Item O ou U

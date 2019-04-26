@@ -1,14 +1,17 @@
 
-# nuts, assemblies, plates, divers, robot, grommet, factory_furniture,industrial, pneumatic, par, timing_belt_sheave, cable_carrier, motor_shrink_disk, gearmotor_servomotor, gearbox, clamps, quincaillery, pneu_frl, pneu_manifold, inside_gripper
 from spareparts.lib.dispatch import *
 from spareparts.lib.settings import *
 
 def strain(spl, garb):
+    #prp1 arguments 
+    plates_prp1 = ['Aluminium','Stainless Steel','Steel']
     spl, garb, _plate = trash_prp1(
             spl, 
             garb, 
             prp1=plates_prp1,
     )
+    #bolts arguments in prp1
+    boulonnerie_prp1 = ['Inch Fastener','Inch Hardware','Metric Fastener','Metric Hardware']
     spl, garb, _nuts = trash_prp1(
             spl, 
             garb, 
@@ -20,6 +23,7 @@ def strain(spl, garb):
             garb, 
             prp1=garb_prp1, 
     )
+
     spl, garb, _robot = trash_robot(spl, garb)
     spl, garb, _inside_gripper = trash_item_number(
         spl, 
@@ -46,14 +50,16 @@ def strain(spl, garb):
             "Gearbox, Gear, Rack & Pinion",
             "Cable Tray & Cable Carrier",
             "Clutch, Brake & Torque Limiter",
-            "Gear Motor & Motor"
+            "Gear Motor & Motor",
         ]
     )
     spl, garb, _quincaillery = trash_prp(
         spl,
         garb,
         prp1=["Mechanical Component"],
-        prp2=["Quincaillery"]
+        prp2=[  "Quincaillery",
+                "Chain & Sprocket",
+        ]
     )
     spl, garb, _sheave = trash_description(
         spl,
@@ -83,7 +89,9 @@ def strain(spl, garb):
         keyword="CLAMP;TRANSPORT UNIT",
         description="description_2"
     )
-    spl, garb, _sig = adjust_significance_notnull(spl, garb)
+    #spl, garb, _sig = adjust_significance_notnull(spl, garb) #-> deactivated
+    #electric components
+    electric_prp1 = ['Electric Component']
     spl, garb, _elec = trash_prp(
         spl, 
         garb, 
@@ -94,7 +102,8 @@ def strain(spl, garb):
             "Enclosures","Sensors",
             "Lights & bulbs",
             "Switches",
-            "General hardware"
+            "General hardware",
+            "Stickers",
         ]
     )
     spl, garb, _par = trash_file_name(
@@ -103,6 +112,36 @@ def strain(spl, garb):
         keyword = r'^par\s*$'
     )
     spl, garb, _P1_A1 = trash_parts_ending_P1_or_A1(spl, garb)
-
-    # report = [rpt for rpt in vars(list) if rpt.startwith('rpt_')]
+    
+    #remove the housed cap
+    #HOUSED BRG.CAP
+    housed_cap = r'HOUSED.*BRG.*CAP'
+    spl, garb, _housed_cap = trash_description(
+            spl, 
+            garb, 
+            keyword=housed_cap, 
+    )
+    #remove collars
+    collar = r'COLLAR'
+    spl, garb, _collar = trash_description(
+            spl, 
+            garb, 
+            keyword=collar, 
+    )
+    #remove FIXING PLATE MOTOR ROLLER
+    fpmr = r'FIXING PLATE MOTOR ROLLER'
+    spl, garb, _collar = trash_description(
+            spl, 
+            garb, 
+            keyword=fpmr, 
+    )
     return (spl, garb) #(spl, garb, report)
+
+
+
+#-----FILTRES FOR SPL-------------------- 
+
+#divers arguments for parts not needed in the spl.
+garb_prp1 = ['Sign & Label','Synthetic Product','Plumbing Hardware','Pièce Manufacturée Magasin']
+
+

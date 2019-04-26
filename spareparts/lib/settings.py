@@ -1,7 +1,8 @@
+import os
 #Link to the JDE on the local network
 JDEPATH = r"Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx"
 #temporary-files-location (jde_temp, db)
-temp_path=r"C:\ProgramData\Spareparts"
+temp_path=os.path.join(os.environ.get('PROGRAMDATA'),"Spareparts")
 #name of temporary jde
 temp_jde = r'temporary_jde.csv'
 #name of database levels
@@ -66,8 +67,8 @@ contents_of_gripper = ["PT1124830",
                         "171257",
                         "171259",
                         "171256",
-                        "24100056",
                         "171255",
+                        "24100056",
                         "PT0078602",
                         "PT0078601",
                         "EEG58C7007P-1",
@@ -82,23 +83,12 @@ contents_of_gripper = ["PT1124830",
                         "122896",
                         "122857",
                         "162925_EEG58C",
+                        "171228"
 ]
 #tabs in the excel file
 TABS = ['garbage','Sheet1']
 #File names 
 output_1 = 'auto.xlsx'
-output_2 = 'auto_with_filters.xlsx'
-output_3 = 'auto_with_filters_aligned.xlsx'
-output_4 = 'auto_colored.xlsx'
-#
-#
-#
-#-----FILTRES FOR SPL-------------------- 
-#bolts arguments in prp1
-boulonnerie_prp1 = ['Inch Fastener','Inch Hardware','Metric Fastener','Metric Hardware']
-#prp1 arguments 
-plates_prp1 = ['Aluminium','Stainless Steel','Steel']
-#electric components
-electric_prp1 = ['Electric Component']
-#divers arguments for parts not needed in the spl.
-garb_prp1 = ['Sign & Label','Synthetic Product','Plumbing Hardware','Pièce Manufacturée Magasin']
+output_2 = 'auto_filters.xlsx'
+output_3 = 'auto_filters_aligned.xlsx'
+output_4 = 'auto_filters_aligned_colored.xlsx'
