@@ -22,6 +22,7 @@ def generating_spl(location_jde, location_jde_temp, location_files):
     garbage = pd.DataFrame()
     files_list = (file for file in listing_txt_files(location_files))
     parts = pd.concat([extract_data(file) for file in files_list], ignore_index=True)
+    ##replacing_C01(parts)
     spl = joining_spl_jde(jde, parts)
     db = loading_db(DB)
     spl = spl.join(db.set_index('item_number'), on='jdelitm')
