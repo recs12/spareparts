@@ -156,3 +156,13 @@ def line_number_display(spl, garbage):
         f"shape spl:\t{spl.shape[0]}\n"
         f"shape garbage:\t{garbage.shape[0]}"
         "\n-----------------------------")
+
+def replacing_C01(spl):
+    """
+        Replacing 123456_C01 to 123456, those are different
+        configs of belt refering to the same item number in the JDE.
+    """
+    pat = r"(?P<number>\d{6})(?P<suffixe>_\d{1,2})"
+    repl = lambda m: m.group('number')
+    spl['part_number'].str.replace(pat, repl)
+    return spl
