@@ -6,7 +6,7 @@ import click
 import pandas as pd
 
 #Path to temporary_jde.csv in windows OS.
-path_to_jde = r"C:\ProgramData\Spareparts\temporary_jde.csv"
+path_to_jde = r"C:\Users\recs\Spareparts\temporary_jde.csv"
 
 def extract_items_auto(file):
     """

@@ -3,6 +3,7 @@
 
 import sys
 import os
+
 from glob import glob
 import pandas as pd
 from spareparts.lib.formatting import *
@@ -22,18 +23,17 @@ def generating_spl(location_jde, location_jde_temp, location_files):
     garbage = pd.DataFrame()
     files_list = (file for file in listing_txt_files(location_files))
     parts = pd.concat([extract_data(file) for file in files_list], ignore_index=True)
-    ##replacing_C01(parts)
     spl = joining_spl_jde(jde, parts)
     db = loading_db(DB)
     spl = spl.join(db.set_index('item_number'), on='jdelitm')
     spl = creating_part_type_column(spl)
     spl = creating_drawing_number_column(spl, jde)
-    spl, garbage = strain(spl, garbage)
+    spl, garbage = strain(spl, garbage) #ADD TAB:NUTS
     line_number_display(spl, garbage)
     creating_excel(spl, garbage ,output_1)
     autofilter(output_1, output_2)
     alignment_column_significance(output_2, output_3)
-    color_coding(TABS , output_3, output_4)
+    color_coding(TABS , output_3, output_4) #ADD TAB NUTS IN TABS VARIABLE IN SETTINGS
 
 if __name__ == '__main__':
     generating_spl(JDEPATH, JDE_TEMP,".")
@@ -50,4 +50,5 @@ if __name__ == '__main__':
 #TODO: add documentation code (pycco)
 #TODO: merge autofilter + alignment_column_significance step
 #TODO: replace 123456_C01 by 123456
+#TODO: close the excels files when ending macro.
 

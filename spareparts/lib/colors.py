@@ -71,6 +71,7 @@ def color_coding(args, selected_file, new_file):
         for tab in args:
                 wb = add_colors(selected_file, tab)
         wb.save(new_file)
+        wb.close()
 
 
 

@@ -77,7 +77,7 @@ def load_jde_data(location_jde, path_to_temp):
 def extract_data(fichier):
     """"""
     #add try and except
-    df = pd.read_table(fichier,
+    df = pd.read_csv(fichier,
                     delimiter='\t',
                     skiprows=[0,2],
                     header=1,
@@ -90,6 +90,7 @@ def extract_data(fichier):
     #clean the columns
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     df['jdelitm'] = df['jdelitm'].str.strip()
+    df = replacing_C01(df)
     df['quantity'] = pd.to_numeric(df['quantity'], errors='coerse')
     df = df.groupby(['part_number','revision','dsc_a','jdelitm','file_name'], as_index=False)['quantity'].sum()
     df = df.replace(r'^-?\s+$', np.nan ,regex=True)
@@ -107,27 +108,30 @@ def listing_txt_files(files_path="."):
             yield file
 
 def creating_excel(df, df_removed, given_name_xlsx):
-    """"""
+    """fill the tabs in excel file with the dataframes"""
     wb = xw.Book()    # this will create a new workbook
-    sht = wb.sheets[0]
-    sht.range('A1').value = excel_headers
+    sht = wb.sheets[0] #skip the Sheet1 and create spl within a loop for all tab
+    sht.range('A1').value = excel_headers #insert headers 
     #color cells
-    sht.range('A1:R1').api.Font.Bold = True #bold first row
+    sht.range('A1:R1').api.Font.Bold = True #bold headers
     for rang,color in headers_bg_hue.items():
         xw.Range(rang).color = color
     for colum,data in dict_header.items():
         sht.range(colum).options(index=False, header=False).value = df[data]
     sht.autofit()
-    sht2 = wb.sheets.add('garbage')
-    sht2.range('A1').value = excel_headers
+    sht_garb = wb.sheets.add('garbage')
+    sht_garb.range('A1').value = excel_headers
+    sht_nuts = wb.sheets.add('_nuts')
+    sht_nuts.range('A1').value = excel_headers
     #color cells
-    sht2.range('A1:R1').api.Font.Bold = True #bold first row
+    sht_garb.range('A1:R1').api.Font.Bold = True #bold first row
     for rang,color in headers_bg_hue.items():
         xw.Range(rang).color = color
     for colum,data in dict_header.items():
-        sht2.range(colum).options(index=False, header=False).value = df_removed[data]
-    sht2.autofit()
+        sht_garb.range(colum).options(index=False, header=False).value = df_removed[data]
+    sht_garb.autofit()
     wb.save(given_name_xlsx)
+    wb.close()
 
 def joining_spl_jde(jde, parts):
     """transform the jde column to string format
@@ -162,7 +166,7 @@ def replacing_C01(spl):
         Replacing 123456_C01 to 123456, those are different
         configs of belt refering to the same item number in the JDE.
     """
-    pat = r"(?P<number>\d{6})(?P<suffixe>_\d{1,2})"
-    repl = lambda m: m.group('number')
-    spl['part_number'].str.replace(pat, repl)
+    pat = r"(?P<number>\d{6})(?P<suffixe>_C\d{2})"
+    repl = lambda m:m.group('number')
+    spl['part_number'] = spl['part_number'].str.replace(pat, repl)
     return spl

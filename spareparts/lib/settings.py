@@ -2,7 +2,7 @@ import os
 #Link to the JDE on the local network
 JDEPATH = r"Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx"
 #temporary-files-location (jde_temp, db)
-temp_path=os.path.join(os.environ.get('PROGRAMDATA'),"Spareparts")
+temp_path=os.path.join(os.environ.get('USERPROFILE'),"Spareparts")
 #name of temporary jde
 temp_jde = r'temporary_jde.csv'
 #name of database levels
@@ -86,7 +86,7 @@ contents_of_gripper = ["PT1124830",
                         "171228"
 ]
 #tabs in the excel file
-TABS = ['garbage','Sheet1']
+TABS = ['garbage', 'Sheet1', '_nuts']
 #File names 
 output_1 = 'auto.xlsx'
 output_2 = 'auto_filters.xlsx'
