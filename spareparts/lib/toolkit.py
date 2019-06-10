@@ -52,8 +52,8 @@ def extract_jde(location_jde):
     df = pd.read_excel( location_jde ,
                         sheet_name=0,
                         skiprows=[0,1,2,3],
-                        usecols="A,C,P,E,H,I,K,O,AR,AT,CB" ,
-                        dtype={'Business Unit':int,'Unit Cost': float }
+                        usecols="A,C,P,E,H,I,K,O,U,AA,AR,AT,CB" ,
+                        dtype={'Business Unit':int, 'Unit Cost': float}
                         )
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     df = df[df.business_unit == 101]
@@ -92,7 +92,7 @@ def extract_data(fichier):
     df['jdelitm'] = df['jdelitm'].str.strip()
     df = replacing_C01(df)
     df['quantity'] = pd.to_numeric(df['quantity'], errors='coerse')
-    df = df.groupby(['part_number','revision','dsc_a','jdelitm','file_name'], as_index=False)['quantity'].sum()
+    df = df.groupby(['part_number','revision','dsc_a','dim','jdelitm','file_name'], as_index=False)['quantity'].sum()
     df = df.replace(r'^-?\s+$', np.nan ,regex=True)
     df = df.dropna(subset=['part_number','jdelitm'])
     #give the module number
@@ -107,29 +107,21 @@ def listing_txt_files(files_path="."):
         if file.endswith(".txt"):
             yield file
 
-def creating_excel(df, df_removed, given_name_xlsx):
+def creating_excel(tabs, given_name_xlsx):
     """fill the tabs in excel file with the dataframes"""
     wb = xw.Book()    # this will create a new workbook
-    sht = wb.sheets[0] #skip the Sheet1 and create spl within a loop for all tab
-    sht.range('A1').value = excel_headers #insert headers 
-    #color cells
-    sht.range('A1:R1').api.Font.Bold = True #bold headers
-    for rang,color in headers_bg_hue.items():
-        xw.Range(rang).color = color
-    for colum,data in dict_header.items():
-        sht.range(colum).options(index=False, header=False).value = df[data]
-    sht.autofit()
-    sht_garb = wb.sheets.add('garbage')
-    sht_garb.range('A1').value = excel_headers
-    sht_nuts = wb.sheets.add('_nuts')
-    sht_nuts.range('A1').value = excel_headers
-    #color cells
-    sht_garb.range('A1:R1').api.Font.Bold = True #bold first row
-    for rang,color in headers_bg_hue.items():
-        xw.Range(rang).color = color
-    for colum,data in dict_header.items():
-        sht_garb.range(colum).options(index=False, header=False).value = df_removed[data]
-    sht_garb.autofit()
+    for tab in tabs.keys():
+        sht = wb.sheets.add(tab)
+    for tab,df in tabs.items():
+        sht = wb.sheets[tab] #skip the Sheet1 and create spl within a loop for all tab
+        sht.range('A1').value = excel_headers #insert headers
+        sht.range('A1:R1').api.Font.Bold = True #bold headers
+        for rang,color in headers_bg_hue.items():
+            xw.Range(rang).color = color
+        for colum,data in dict_header.items():
+            sht.range(colum).options(index=False, header=False).value = df[data]
+        sht.autofit()
+    wb.sheets['Sheet1'].delete()
     wb.save(given_name_xlsx)
     wb.close()
 
@@ -155,11 +147,15 @@ def creating_drawing_number_column(spl, jde):
     spl['drawing'] = spl.part_number.isin(list_of_drawings)
     return spl
 
-def line_number_display(spl, garbage):
+def line_number_display(spl, garbage, plates, elec, asm, nuts):
     print("-----------------------------\n"
         f"shape spl:\t{spl.shape[0]}\n"
-        f"shape garbage:\t{garbage.shape[0]}"
-        "\n-----------------------------")
+        f"shape garbage:\t{garbage.shape[0]}\n"
+        f"shape plates:\t{plates.shape[0]}\n"
+        f"shape elec:\t{elec.shape[0]}\n"
+        f"shape asm:\t{asm.shape[0]}\n"
+        f"shape nuts:\t{nuts.shape[0]}\n"
+        "-----------------------------")
 
 def replacing_C01(spl):
     """

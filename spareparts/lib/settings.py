@@ -3,6 +3,8 @@ import os
 JDEPATH = r"Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx"
 #temporary-files-location (jde_temp, db)
 temp_path=os.path.join(os.environ.get('USERPROFILE'),"Spareparts")
+#tempo-files-location (jde_temp, db)
+tempo_local_drive=os.path.join("T:\tempo\recs","ARCHIVES_SPL")
 #name of temporary jde
 temp_jde = r'temporary_jde.csv'
 #name of database levels
@@ -28,7 +30,10 @@ excel_headers = [   "Item Number",
                     "prp2",
                     "file_name",
                     "Type",
-                    "drawing",
+                    "Drawing",
+                    "DIM",
+                    "Comm Class",
+                    "Item Pool",
 ]
 #equivalent ->  Excel position & columns name of the data
 #e.g. the data in excel column 'A2' is from  spl.part_number
@@ -51,11 +56,14 @@ dict_header = {
             'S2':'file_name',       #
             'T2':'type',            #
             'U2':'drawing',         #
+            'V2':'dim',             #"DIM"
+            'W2':'comm_class',      #"Comm Class"
+            'X2':'item_pool',       #TODO: "Item Pool" - refer in filter
 }
-#headers spl color cells 
+#headers spl color cells
 headers_bg_hue = {
                 'A1:H1': (235, 247, 133), #yellow
-                'I1:U1': (183, 185, 188), #grey
+                'I1:X1': (183, 185, 188), #grey
 }
 #parts you find in a gripper that does not need to be in the spl
 contents_of_gripper = ["PT1124830",
@@ -85,10 +93,8 @@ contents_of_gripper = ["PT1124830",
                         "162925_EEG58C",
                         "171228"
 ]
-#tabs in the excel file
-TABS = ['garbage', 'Sheet1', '_nuts']
-#File names 
+
+#File names
 output_1 = 'auto.xlsx'
 output_2 = 'auto_filters.xlsx'
 output_3 = 'auto_filters_aligned.xlsx'
-output_4 = 'auto_filters_aligned_colored.xlsx'

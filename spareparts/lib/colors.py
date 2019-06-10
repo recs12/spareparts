@@ -67,7 +67,7 @@ def add_colors(selected_file, sheet_spl ):
         extraction(selected_file, wb ,sheet_spl)
         return wb
 
-def color_coding(args, selected_file, new_file):
+def coloring_excel(args, selected_file, new_file):
         for tab in args:
                 wb = add_colors(selected_file, tab)
         wb.save(new_file)

@@ -27,21 +27,6 @@ warnings.filterwarnings("ignore", 'This pattern has match groups')
 import pandas as pd
 
 def proceed_yes_or_no():
-    """Gets and prints the spreadsheet's header columns
-
-    settings
-    ----------
-    file_loc : str
-        The file location of the spreadsheet
-    print_cols : bool, optional
-        A flag used to print the columns to the console (default is
-        False)
-
-    Returns
-    -------
-    list
-        a list of strings used that are the header columns
-    """
     print(f"Run: {__file__}")
     answer = input("Proceed ([y]/n) ?:  ")
     if answer in ['yes', 'y', 'YES', 'Y']:
@@ -148,8 +133,11 @@ def fill_possibility_with_question_mark(dataframe):
     return dataframe
 
 def info_to_print(spl, requisitions):
-    qty_spl, qty_requisition = len(spl), len(requisitions)
-    print(f"number of excel files : {qty_spl + qty_requisition} (spl:{qty_spl}, requisition:{qty_requisition})")
+    if (spl.empty and requisitions.empty):
+        print("no spl or requisitions in the folder")
+    else:
+        qty_spl, qty_requisition = len(spl), len(requisitions)
+        print(f"number of excel files : {qty_spl + qty_requisition} (spl:{qty_spl}, requisition:{qty_requisition})")
 
 def main():
     proceed_yes_or_no()
@@ -169,3 +157,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+#TODO: When there is no REQ the program crashes bug to fix.
