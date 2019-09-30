@@ -8,7 +8,7 @@ with open('spareparts/__init__.py', 'r') as f:
             version = line.strip().split('=')[1].strip(' \'"')
             break
     else:
-        version = '0.0.2'
+        version = '1.0.0'
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     readme = f.read()
@@ -20,10 +20,10 @@ setup(
     version=version,
     description='',
     long_description=readme,
-    author='jason caldarella',
-    author_email='jason.caldarella@yahoo.com',
-    maintainer='jason caldarella',
-    maintainer_email='jason.caldarella@yahoo.com',
+    author='slimane rechdi',
+    author_email='slimane.rechdi@gmail.com',
+    maintainer='slimane rechdi',
+    maintainer_email='slimane.rechdi@gmail.com',
     url='https://github.com/_/spareparts',
     license='MIT/Apache-2.0',
 

@@ -111,7 +111,7 @@ class Spareparts(object):
 
     def load_db(self, model):
         """load the item-level database"""
-        db_model = os.path.join(tempo_local,'db',model)
+        db_model = os.path.join(tempo_local,model)
         if not os.path.exists(db_model):
             self.db = pd.DataFrame()
         else:
@@ -565,3 +565,4 @@ class Spareparts(object):
         import os
         os.remove(output_1)
         os.remove(output_2)
+

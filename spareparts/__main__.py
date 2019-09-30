@@ -7,11 +7,9 @@ import functools
 from glob import glob
 import os, sys
 import bashplotlib
-import click
 import numpy as np
 import pandas as pd
 import xlwings as xw
-import termgraph
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment
 from spareparts.lib.spare import Colors
@@ -19,11 +17,22 @@ from spareparts.lib.spare import Spareparts
 from spareparts.lib.settings import *
 
 
+"""
+The package Spareparts got 3 commands:
+
+1. **Generate spl** 
+python -m spareparts.spl
+
+2. **Generate level data** 
+python -m spareparts.db
+
+3. **Compare two spareparts lists** 
+python -m spareparts.compare
+
+"""
 
 
-@click.command()
-@click.argument('model')
-def generating_spl(model):
+def main(model='all.csv'):
     """manipulation of the date before creating the excel file"""
     machine = Spareparts(model)
     machine.prompt_confirmation()
@@ -41,4 +50,21 @@ def generating_spl(model):
 
 
 if __name__ == "__main__":
-    generating_spl()
+    main()
+
+
+
+#use of priority system [1]-[2]-[3]
+#
+#TODO: [1] name change:: all.csv - > 3levels.csv
+#TODO: [1] setup path to  3levels.csv in each user tempo.
+#TODO: [1] move gripper into strain file instead of settings.py
+#TODO: [1] write docs > pycco
+#TODO: [2] make an .exe (icon available in GitHub)
+#TODO: [3] deactivate loguru
+#TODO: [3] implement bashplotlib 
+#TODO: [3] write test:: strain
+#TODO: [3] change module to levels.csv
+#TODO: [3] correction - close excel file at end
+#TODO: [3] implemente pipenv
+

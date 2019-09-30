@@ -1,0 +1,1 @@
+pyinstaller cli.py --name grinder --onefile -i grinder.ico

@@ -80,6 +80,7 @@ def trash_parts_ending_P1_or_A1(spl, garbage):
 
 
 
+@special_pt("PT1111808")
 @special_pt("PT0038724")
 @special_pt("EEG58C6000A-.*")
 def trash_assemblies(spl, garbage):
@@ -132,6 +133,7 @@ def trash_prp(spl, garbage, prp1=[], prp2=[]):
     return (spl, garbage, relocate)
 
 
+@special_pt('PT0032489')
 @special_desc_2(r"Retaining Ring")
 @special_desc_2(r"Seal")
 @special_desc_2(r"Door&Panel, Hardware&Furniture")
