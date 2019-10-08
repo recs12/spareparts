@@ -533,7 +533,11 @@ class Spareparts(object):
         self.garbage = pd.concat([self.garbage, _stud]).drop_duplicates(keep=False)
         Spareparts.log_report(_stud, "_stud")
 
-        
+        # === suppliers ===
+        self.spl, self.garbage, _suppliers = trash_description(self.spl, self.garbage, keyword="SOUS-TRAITANCE RECOUVREMENT")
+        self.garbage = pd.concat([self.garbage, _suppliers]).drop_duplicates(keep=False)
+        Spareparts.log_report(_suppliers, "_suppliers")
+
         self.spl = self.spl.drop_duplicates(keep=False) #remove all duplicates
         self.asm = _asm
         self.elec = _elec
