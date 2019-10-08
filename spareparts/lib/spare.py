@@ -543,6 +543,13 @@ class Spareparts(object):
         self.garbage = pd.concat([self.garbage, _weld_nut]).drop_duplicates(keep=False)
         Spareparts.log_report(_weld_nut, "_weld_nut")
 
+        # === _transparent ===
+        self.spl, self.garbage, _transparent = trash_prp(
+            self.spl, self.garbage, prp1=["POLYCARBONATE PLATE"], prp2=["TRANSPARENT"]
+        )
+        self.garbage = pd.concat([self.garbage, _transparent]).drop_duplicates(keep=False)
+        Spareparts.log_report(_transparent, "_transparent")
+
         self.spl = self.spl.drop_duplicates(keep=False) #remove all duplicates
         self.asm = _asm
         self.elec = _elec
