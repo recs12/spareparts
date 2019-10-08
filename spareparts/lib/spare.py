@@ -538,6 +538,11 @@ class Spareparts(object):
         self.garbage = pd.concat([self.garbage, _suppliers]).drop_duplicates(keep=False)
         Spareparts.log_report(_suppliers, "_suppliers")
 
+        # === weld nut ===
+        self.spl, self.garbage, _weld_nut = trash_description(self.spl, self.garbage, keyword="WELD NUT")
+        self.garbage = pd.concat([self.garbage, _weld_nut]).drop_duplicates(keep=False)
+        Spareparts.log_report(_weld_nut, "_weld_nut")
+
         self.spl = self.spl.drop_duplicates(keep=False) #remove all duplicates
         self.asm = _asm
         self.elec = _elec
