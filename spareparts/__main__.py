@@ -65,3 +65,4 @@ if __name__ == "__main__":
 # then reinjecte sample of new data 
 #TODO: [3] wrong format of txt file handling
 #TODO: [3] empty folder handling
+#TODO: [2] merge spare.py + dispatch.py

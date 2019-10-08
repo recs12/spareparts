@@ -52,7 +52,7 @@ class Colors(object):
             @functools.wraps(wrapped_function)
             def _wrapper(*args, **kwargs):
                 d, s = wrapped_function(*args, **kwargs)
-                targeted_index = d.index[d.UOM.isin(["MT", "FT", "RL"])].tolist()
+                targeted_index = d.index[d.UOM.isin(["MT", "FT", "RL","SF"])].tolist()
                 for row in targeted_index:
                     cellule = (
                         f"I{row+2}"
