@@ -546,13 +546,16 @@ class Spareparts(object):
         prt_num = self.spl.part_number
         prt_num = prt_num[prt_num.str.contains(r'\bPT\d{7}\b|\bEEG.*\b|\bEPT.*\b', na=False, regex=True)] #debug r'PT\d{7}|EEG|EPT'
         prt_num = prt_num.str.strip().tolist()
-        itm_num_desc2 = self.jde[['item_number','drawing_number']]
-        itm_num_desc2 = itm_num_desc2.set_index('drawing_number')
+        #drawing number is found in JDE:'drawing_number' 
+        _drawing = 'drawing_number'
+        _item = 'item_number'
+        itm_num_drawing = self.jde[[_item,_drawing]]
+        itm_num_drawing = itm_num_drawing.set_index(_drawing)
         equivalences = {}
         for i in prt_num:
-            if i in itm_num_desc2.index.tolist():
-                if len(itm_num_desc2.loc[i, 'item_number'])==6:
-                    equivalences[i]= itm_num_desc2.loc[i, 'item_number']
+            if i in itm_num_drawing.index.tolist():
+                if len(itm_num_drawing.loc[i, _item])==6:
+                    equivalences[i]= itm_num_drawing.loc[i, _item]
         self.drawings = equivalences
         
 

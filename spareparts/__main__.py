@@ -33,6 +33,7 @@ def main(model='all.csv'):
     machine.load_db(model)
     machine.part_type()
     machine.equivalences()
+    import pdb; pdb.set_trace()
     machine.drawing_number()
     machine.strain()
     machine.lines_numbers()
