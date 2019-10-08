@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>spare.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>spare.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">bashplotlib</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xlwings</span> <span class="kn">as</span> <span class="nn">xw</span>
+<span class="kn">from</span> <span class="nn">openpyxl</span> <span class="kn">import</span> <span class="n">Workbook</span><span class="p">,</span> <span class="n">load_workbook</span>
+<span class="kn">from</span> <span class="nn">openpyxl.styles</span> <span class="kn">import</span> <span class="n">Alignment</span>
+
+<span class="kn">from</span> <span class="nn">spareparts.lib.settings</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">spareparts.lib.dispatch</span> <span class="kn">import</span> <span class="o">*</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Colors</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">electric</span><span class="p">(</span><span class="n">prp1</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Generate spareparts list.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">targeted_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">prp1</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">prp1</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">targeted_index</span><span class="p">:</span>
+                    <span class="n">cellule</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">f</span><span class="s2">&quot;A{row+2}:U{row+2}&quot;</span>
+                    <span class="p">)</span>  <span class="c1"># number 2 added for compensate lapse in excel file</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">cellule</span><span class="p">)</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">_wrapper</span>
+
+        <span class="k">return</span> <span class="n">_outer_wrapper</span>
+
+
+    <span class="k">def</span> <span class="nf">obsolete</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span>
+            <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">targeted_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">ST</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;U&quot;</span><span class="p">])]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">targeted_index</span><span class="p">:</span>
+                    <span class="n">cellule</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">f</span><span class="s2">&quot;J{row+2}&quot;</span>
+                    <span class="p">)</span>  <span class="c1"># number 2 added for compensate lapse in excel file</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">cellule</span><span class="p">)</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">_wrapper</span>
+
+        <span class="k">return</span> <span class="n">_outer_wrapper</span>
+
+
+    <span class="k">def</span> <span class="nf">meter_foot</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_outer_wrapper</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">):</span>
+            <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">wrapped_function</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">wrapped_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">targeted_index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">UOM</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;MT&quot;</span><span class="p">,</span> <span class="s2">&quot;FT&quot;</span><span class="p">,</span> <span class="s2">&quot;RL&quot;</span><span class="p">])]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">targeted_index</span><span class="p">:</span>
+                    <span class="n">cellule</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">f</span><span class="s2">&quot;I{row+2}&quot;</span>
+                    <span class="p">)</span>  <span class="c1"># number 2 added for compensate lapse in excel file</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">cellule</span><span class="p">)</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">_wrapper</span>
+
+        <span class="k">return</span> <span class="n">_outer_wrapper</span>
+
+    <span class="n">electric</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">electric</span><span class="p">)</span>
+    <span class="n">obsolete</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">obsolete</span><span class="p">)</span>
+    <span class="n">meter_foot</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">meter_foot</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Spareparts</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">JDEPATH</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx&quot;</span><span class="p">)</span>
+    <span class="n">JDE_TEMP</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempo_local</span><span class="p">,</span> <span class="n">temp_jde</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jde</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_jde_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asm</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elec</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drawings</span> <span class="o">=</span> <span class="p">{}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>load the item-level database</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">prompt_confirmation</span><span class="p">():</span>
+        <span class="s2">&quot;ask user to resume the program&quot;</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Run: {__file__}&quot;</span><span class="p">)</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Proceed ([y]/n) ?:  &quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">answer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Process has stopped.&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">generate_spl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">(</span><span class="nb">file</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">Spareparts</span><span class="o">.</span><span class="n">listing_txt_files</span><span class="p">())</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Spareparts</span><span class="o">.</span><span class="n">extract_data</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span> <span class="o">=</span> <span class="n">Spareparts</span><span class="o">.</span><span class="n">joining_spl_jde</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jde</span><span class="p">,</span> <span class="n">parts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">part_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">part_number</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="c1">#strip part_number column</span>
+        
+
+    <span class="k">def</span> <span class="nf">load_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">db_model</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempo_local</span><span class="p">,</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">db_model</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">db_model</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;possibility&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">})</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">item_number</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">item_number</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">item_number</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">item_number</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">possibility</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">possibility</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">possibility</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">possibility</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;item_number&quot;</span><span class="p">,</span> <span class="s2">&quot;possibility&quot;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;item_number&quot;</span><span class="p">),</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;jdelitm&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>load the data from spl list</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">loading_spl</span><span class="p">(</span><span class="n">path</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Check if spl path is correct.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spl</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s2">&quot;Sheet1&quot;</span><span class="p">)</span>
+            <span class="n">spl</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">spl</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">spl</span><span class="o">.</span><span class="n">item_number</span> <span class="o">=</span> <span class="n">spl</span><span class="o">.</span><span class="n">item_number</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">)</span>
+            <span class="n">spl</span> <span class="o">=</span> <span class="n">spl</span><span class="p">[[</span><span class="s2">&quot;item_number&quot;</span><span class="p">]]</span>
+            <span class="k">return</span> <span class="n">spl</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_jde_data</span><span class="p">():</span>
+        <span class="n">JDE_TEMP</span> <span class="o">=</span> <span class="n">Spareparts</span><span class="o">.</span><span class="n">JDE_TEMP</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">JDE_TEMP</span><span class="p">):</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Do you want to load the temporary jde? (fast) </span><span class="se">\n</span><span class="s2"> Path:{JDE_TEMP}</span><span class="se">\n</span><span class="s2"> Proceed ([y]/n) ?:&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">answer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]:</span>
+                <span class="n">jde_temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">JDE_TEMP</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">jde_temp</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Process interrupted.&quot;</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">jde_data</span> <span class="o">=</span> <span class="n">Spareparts</span><span class="o">.</span><span class="n">extract_jde</span><span class="p">()</span>
+            <span class="n">jde_data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">JDE_TEMP</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">jde_data</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_jde</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>add a try - except (in case the file is not found)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Path: PTP-JDE: {Spareparts.JDEPATH}</span><span class="se">\n</span><span class="s2">-&gt; Loading the JDE Inventory...&quot;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span>
+            <span class="n">Spareparts</span><span class="o">.</span><span class="n">JDEPATH</span><span class="p">,</span>
+            <span class="n">sheet_name</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">skiprows</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="n">usecols</span><span class="o">=</span><span class="s2">&quot;A,C,P,E,H,I,K,O,U,X,AA,AR,AT,CB&quot;</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Business Unit&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;Unit Cost&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">business_unit</span> <span class="o">==</span> <span class="mi">101</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">df</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_data</span><span class="p">(</span><span class="n">fichier</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>add try and except</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span> <span class="n">fichier</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">header</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Part Number&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Revision&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;DSC_A&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;JDELITM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;DIM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Quantity&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;File Name&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">index_col</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;latin3&quot;</span><span class="p">,</span>
+            <span class="n">error_bad_lines</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">na_values</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
+        <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>clean the columns</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;jdelitm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;jdelitm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">Spareparts</span><span class="o">.</span><span class="n">replacing_C01</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;quantity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;quantity&quot;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerse&quot;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;part_number&quot;</span><span class="p">,</span> <span class="s2">&quot;revision&quot;</span><span class="p">,</span> <span class="s2">&quot;dsc_a&quot;</span><span class="p">,</span> <span class="s2">&quot;dim&quot;</span><span class="p">,</span> <span class="s2">&quot;jdelitm&quot;</span><span class="p">,</span> <span class="s2">&quot;file_name&quot;</span><span class="p">],</span>
+            <span class="n">as_index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="p">)[</span><span class="s2">&quot;quantity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^-?\s+$&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;part_number&quot;</span><span class="p">,</span> <span class="s2">&quot;jdelitm&quot;</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>give the module number</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">module_number</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fichier</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;module&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">module_number</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot; [+][</span><span class="se">\t</span><span class="s2">{module_number}</span><span class="se">\t</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Replacing 123456_C01 to 123456.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">listing_txt_files</span><span class="p">():</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="nb">file</span>
+
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">replacing_C01</span><span class="p">(</span><span class="n">df</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">pat</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?P&lt;number&gt;\d{6})(?P&lt;suffixe&gt;_C\d{2})&quot;</span>
+        <span class="n">repl</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;number&quot;</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;part_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;part_number&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span> <span class="n">repl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>transform the jde column to string format</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">joining_spl_jde</span><span class="p">(</span><span class="n">jde</span><span class="p">,</span> <span class="n">parts</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>join the parts documents with the jde on jdelitm column
+and sort it on column:module</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">jde</span><span class="o">.</span><span class="n">item_number</span> <span class="o">=</span> <span class="n">jde</span><span class="o">.</span><span class="n">item_number</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">spl</span> <span class="o">=</span> <span class="n">parts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jde</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;item_number&quot;</span><span class="p">),</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;jdelitm&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;module&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spl</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>create a column type &ndash;&gt; .par .psm .asm</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">part_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">file_name</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">lines_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;-------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;spl       :</span><span class="se">\t</span><span class="s2">{self.spl.shape[0]}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;garbage   :</span><span class="se">\t</span><span class="s2">{self.garbage.shape[0]}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;plates    :</span><span class="se">\t</span><span class="s2">{self.plates.shape[0]}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;elec      :</span><span class="se">\t</span><span class="s2">{self.elec.shape[0]}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;asm       :</span><span class="se">\t</span><span class="s2">{self.asm.shape[0]}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">f</span><span class="s2">&quot;nuts      :</span><span class="se">\t</span><span class="s2">{self.nuts.shape[0]}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;-------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>TODO: Bashplotlib
+from bashplotlib.horizontal_histogram import plot_horiz_hist</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>plot_horiz_hist(
+    &lsquo;scratch_data.txt&rsquo;,
+    title=&rsquo;Horizontal Histogram!&rsquo;,
+    ylab=True,
+    show_summary=True)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>fill the tabs in excel file with the dataframes</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">create_excel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">given_name_xlsx</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">tabs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nuts&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuts</span><span class="p">,</span>
+            <span class="s2">&quot;asm&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">asm</span><span class="p">,</span>
+            <span class="s2">&quot;plates&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+            <span class="s2">&quot;elec&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">elec</span><span class="p">,</span>
+            <span class="s2">&quot;garbage&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span>
+            <span class="s2">&quot;spl&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">xw</span><span class="o">.</span><span class="n">Book</span><span class="p">()</span>  <span class="c1"># this will create a new workbook</span>
+        <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">tabs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">sht</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">sheets</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tab</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">tabs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sht</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">sheets</span><span class="p">[</span><span class="n">tab</span><span class="p">]</span>  <span class="c1"># skip the Sheet1 and create spl within a loop for all tab</span>
+            <span class="n">sht</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="s2">&quot;A1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">excel_headers</span>  <span class="c1"># insert headers (horizontal)</span>
+            <span class="n">sht</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="s2">&quot;A1:R1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">Bold</span> <span class="o">=</span> <span class="bp">True</span>  <span class="c1"># bold headers (horizontal)</span>
+            <span class="k">for</span> <span class="n">rang</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">headers_bg_hue</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">xw</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">rang</span><span class="p">)</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+            <span class="k">for</span> <span class="n">colum</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dict_header</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">sht</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">colum</span><span class="p">)</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data</span><span class="p">]</span>
+            <span class="n">sht</span><span class="o">.</span><span class="n">autofit</span><span class="p">()</span>
+        <span class="n">wb</span><span class="o">.</span><span class="n">sheets</span><span class="p">[</span><span class="s2">&quot;Sheet1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">given_name_xlsx</span><span class="p">)</span>
+        <span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Filter the unwanted parts here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">edit_excel</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">load_workbook</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">wb</span><span class="o">.</span><span class="n">sheetnames</span><span class="p">:</span>
+            <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+            <span class="n">MAX_</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_row</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="s2">&quot;A1:X{MAX_}&quot;</span><span class="p">)</span>
+            <span class="n">ws</span><span class="o">.</span><span class="n">auto_filter</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="k">for</span> <span class="n">sheet</span> <span class="ow">in</span> <span class="n">wb</span><span class="o">.</span><span class="n">sheetnames</span><span class="p">:</span>
+            <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">sheet</span><span class="p">]</span>
+            <span class="n">significance_column</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="s1">&#39;F&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">significance_column</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">Alignment</span><span class="p">(</span><span class="n">horizontal</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+        <span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">refine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ambiguous</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">[</span>
+            <span class="o">~</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">possibility</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+                <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">possibility</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">)</span>
+                <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">possibility</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">ambiguous_items</span> <span class="o">=</span> <span class="n">ambiguous</span><span class="o">.</span><span class="n">part_number</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="c1">#Whitespaces stripped here</span>
+        <span class="k">for</span> <span class="n">itm</span> <span class="ow">in</span> <span class="n">ambiguous_items</span><span class="p">:</span>
+            <span class="n">mdl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">itm</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">]</span> <span class="c1">#module =&gt; mdl</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">possibility</span><span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">part_number</span> <span class="o">==</span> <span class="n">itm</span><span class="p">,</span> <span class="s1">&#39;possibility&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">itm</span><span class="p">,</span> <span class="n">mdl</span><span class="p">]</span>
+
+
+    <span class="nd">@Colors.obsolete</span><span class="p">(</span><span class="n">mauve</span><span class="p">)</span>
+    <span class="nd">@Colors.meter_foot</span><span class="p">(</span><span class="n">blue</span><span class="p">)</span>
+    <span class="nd">@Colors.electric</span><span class="p">([</span><span class="s2">&quot;Electric Component&quot;</span><span class="p">],</span> <span class="n">orange</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">extraction</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">workbook</span><span class="p">,</span> <span class="n">sht_name</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="n">sht_name</span><span class="p">)</span>
+        <span class="n">sht</span> <span class="o">=</span> <span class="n">workbook</span><span class="o">.</span><span class="n">sheets</span><span class="p">[</span><span class="n">sht_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sht</span><span class="p">)</span>
+
+    <span class="n">extraction</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">extraction</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">add_colors</span><span class="p">(</span><span class="n">selected_file</span><span class="p">,</span> <span class="n">sheet_spl</span><span class="p">):</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">xw</span><span class="o">.</span><span class="n">Book</span><span class="p">(</span><span class="n">selected_file</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">extraction</span><span class="p">(</span><span class="n">selected_file</span><span class="p">,</span> <span class="n">wb</span><span class="p">,</span> <span class="n">sheet_spl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wb</span>
+
+    <span class="k">def</span> <span class="nf">colors_excel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_file</span><span class="p">,</span> <span class="n">new_file</span><span class="p">):</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nuts&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuts</span><span class="p">,</span>
+                <span class="s2">&quot;asm&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">asm</span><span class="p">,</span>
+                <span class="s2">&quot;plates&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plates</span><span class="p">,</span>
+                <span class="s2">&quot;elec&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">elec</span><span class="p">,</span>
+                <span class="s2">&quot;garbage&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span>
+                <span class="s2">&quot;spl&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">tab</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">wb</span> <span class="o">=</span> <span class="n">Spareparts</span><span class="o">.</span><span class="n">add_colors</span><span class="p">(</span><span class="n">selected_file</span><span class="p">,</span> <span class="n">tab</span><span class="p">)</span>
+        <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">new_file</span><span class="p">)</span>
+        <span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">log_report</span><span class="p">(</span><span class="n">_df</span><span class="p">,</span> <span class="n">df_name</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+
+        <span class="n">_df</span><span class="p">[</span><span class="s2">&quot;groupe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_name</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">df_name:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">_df</span><span class="p">[[</span><span class="s2">&quot;groupe&quot;</span><span class="p">,</span> <span class="s2">&quot;part_number&quot;</span><span class="p">,</span> <span class="s2">&quot;description_1&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">strain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;report_{time}.log&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <h3><span id="plates" href="plates"> plates </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">plates_prp1</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Aluminium&quot;</span><span class="p">,</span> <span class="s2">&quot;Stainless Steel&quot;</span><span class="p">,</span> <span class="s2">&quot;Steel&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_plates</span> <span class="o">=</span> <span class="n">trash_prp1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">prp1</span><span class="o">=</span><span class="n">plates_prp1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_plates</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_plates</span><span class="p">,</span> <span class="s2">&quot;_plates&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <h3><span id="fasteners" href="fasteners"> fasteners </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_nuts</span> <span class="o">=</span> <span class="n">trash_fastener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_nuts</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_nuts</span><span class="p">,</span> <span class="s2">&quot;_nuts&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <h3><span id="assemblies" href="assemblies"> assemblies </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_asm</span> <span class="o">=</span> <span class="n">trash_assemblies</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">)</span>  <span class="c1"># _ASM SEEMS TO BE THE EXCEPTION</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_asm</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_asm</span><span class="p">,</span> <span class="s2">&quot;_asm&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <h3><span id="uncategorized" href="uncategorized"> uncategorized </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">garbage_prp1</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Sign &amp; Label&quot;</span><span class="p">,</span> <span class="s2">&quot;Plumbing Hardware&quot;</span><span class="p">,</span> <span class="s2">&quot;Pièce Manufacturée Magasin&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_uncatego</span> <span class="o">=</span> <span class="n">trash_prp1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">prp1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage_prp1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_uncatego</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_uncatego</span><span class="p">,</span> <span class="s2">&quot;_uncatego&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <h3><span id="robot" href="robot"> robot </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_robot</span> <span class="o">=</span> <span class="n">trash_robot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_robot</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_robot</span><span class="p">,</span> <span class="s2">&quot;_robot&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <h3><span id="gripper" href="gripper"> gripper </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_inside_gripper</span> <span class="o">=</span> <span class="n">trash_item_number</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span>
+            <span class="n">list_parts</span><span class="o">=</span><span class="n">contents_of_gripper</span><span class="p">,</span>  <span class="c1"># The contents of gripper in the file settings.</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_inside_gripper</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_inside_gripper</span><span class="p">,</span> <span class="s2">&quot;_inside_gripper&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <h3><span id="industrial" href="industrial"> industrial </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_industrial</span> <span class="o">=</span> <span class="n">trash_prp</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">prp1</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Industrial Engine&quot;</span><span class="p">],</span> <span class="n">prp2</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Engine Parts&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_industrial</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_industrial</span><span class="p">,</span> <span class="s2">&quot;_industrial&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <h3><span id="_furniture" href="_furniture"> _furniture </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_furniture</span> <span class="o">=</span> <span class="n">trash_prp</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">prp1</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Factory Furniture&quot;</span><span class="p">],</span> <span class="n">prp2</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Tape&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_furniture</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_furniture</span><span class="p">,</span> <span class="s2">&quot;_furniture&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <h3><span id="_gearbox" href="_gearbox"> _gearbox </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_gearbox</span> <span class="o">=</span> <span class="n">trash_prp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span>
+            <span class="n">prp1</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Mechanical Component&quot;</span><span class="p">],</span>
+            <span class="n">prp2</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Gearbox, Gear, Rack &amp; Pinion&quot;</span><span class="p">,</span> <span class="s2">&quot;Gear Motor &amp; Motor&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_gearbox</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_gearbox</span><span class="p">,</span> <span class="s2">&quot;_gearbox&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>=== _sheave ===
+ALBP(2019-09-16): TIMING BELT SHEAVE kept in SPL.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <h3><span id="_grommet" href="_grommet"> _grommet </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_grommet</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;GROMMET;RUBBER&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_grommet</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_grommet</span><span class="p">,</span> <span class="s2">&quot;_grommet&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <h3><span id="_manif" href="_manif"> _manif </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_manif</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;PNEU.VALVE\sMANIFOLD\s[\d/\d\:\d{2}|\d\:\d{2}]&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;description_1&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_manif</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_manif</span><span class="p">,</span> <span class="s2">&quot;_manif&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <h3><span id="_pneu_frl" href="_pneu_frl"> _pneu_frl </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_pneu_frl</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span>
+            <span class="n">keyword</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;PNEU\.F\.R\.L&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;description_1&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_pneu_frl</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_pneu_frl</span><span class="p">,</span> <span class="s2">&quot;_pneu_frl&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <h3><span id="_clamp" href="_clamp"> _clamp </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_clamp</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;CLAMP;TRANSPORT UNIT&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;description_2&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_clamp</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_clamp</span><span class="p">,</span> <span class="s2">&quot;_clamp&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <h3><span id="electric" href="electric"> electric </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_elec</span> <span class="o">=</span> <span class="n">trash_prp</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span>
+            <span class="n">prp1</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Electric Component&quot;</span><span class="p">],</span>
+            <span class="n">prp2</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Cable Tray &amp; Cable Carrier&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Conduits &amp; fittings&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Enclosures&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Sensors&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Lights &amp; bulbs&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Switches&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;General hardware&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Stickers&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Buttons &amp; pilot lights&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Connectors &amp; crimps&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_elec</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;***_elec: {_elec}&quot;</span><span class="p">)</span>
+
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_elec</span><span class="p">,</span> <span class="s2">&quot;_elec&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <h3><span id="_par" href="_par"> _par </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_par</span> <span class="o">=</span> <span class="n">trash_file_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^par\s*$&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_par</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_par</span><span class="p">,</span> <span class="s2">&quot;_par&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <h3><span id="_p1_a1" href="_p1_a1"> _P1_A1 </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_P1_A1</span> <span class="o">=</span> <span class="n">trash_parts_ending_P1_or_A1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_P1_A1</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_P1_A1</span><span class="p">,</span> <span class="s2">&quot;_P1_A1&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>=== _housed_cap ===
+ALBP(2019-09-16): House-brg-cap kept in SPL.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <h3><span id="_collar" href="_collar"> _collar </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">collar</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;COLLAR&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_collar</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="n">collar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_collar</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_collar</span><span class="p">,</span> <span class="s2">&quot;_collar&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <h3><span id="fpmr" href="fpmr"> fpmr </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">fpmr</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;FIXING PLATE MOTOR ROLLER&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_fpmr</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="n">fpmr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_fpmr</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_fpmr</span><span class="p">,</span> <span class="s2">&quot;_fpmr&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <h3><span id="fit" href="fit"> fit </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">fit</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;PNEU.FIT.NIPPLE&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_fit</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_fit</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_fit</span><span class="p">,</span> <span class="s2">&quot;_fit&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <h3><span id="miscellaneous" href="miscellaneous"> miscellaneous </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">rejected_parts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;DPP95A1530S-3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;136918&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;216081&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;162463&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;146660&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;02479&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;EEG59F2164P-9151967&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_misc</span> <span class="o">=</span> <span class="n">trash_item_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">rejected_parts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_misc</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_misc</span><span class="p">,</span> <span class="s2">&quot;_misc&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <h3><span id="key;square" href="key;square"> KEY;SQUARE </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_key_square</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;KEY;SQUARE&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_key_square</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_key_square</span><span class="p">,</span> <span class="s2">&quot;_key_square&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <h3><span id="stud" href="stud"> STUD </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_stud</span> <span class="o">=</span> <span class="n">trash_description</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;STUD&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">garbage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">garbage</span><span class="p">,</span> <span class="n">_stud</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">Spareparts</span><span class="o">.</span><span class="n">log_report</span><span class="p">(</span><span class="n">_stud</span><span class="p">,</span> <span class="s2">&quot;_stud&quot;</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">asm</span> <span class="o">=</span> <span class="n">_asm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elec</span> <span class="o">=</span> <span class="n">_elec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuts</span> <span class="o">=</span> <span class="n">_nuts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plates</span> <span class="o">=</span> <span class="n">_plates</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <p>return dictionnary &gt; {ptnumber:drawing number}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">equivalences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">prt_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="o">.</span><span class="n">part_number</span>
+        <span class="n">prt_num</span> <span class="o">=</span> <span class="n">prt_num</span><span class="p">[</span><span class="n">prt_num</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;PT\d{7}|EEG|EPT&#39;</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="bp">True</span><span class="p">)]</span> <span class="c1">#debug r&#39;PT\d{7}|EEG|EPT&#39;</span>
+        <span class="n">prt_num</span> <span class="o">=</span> <span class="n">prt_num</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">itm_num_desc2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jde</span><span class="p">[[</span><span class="s1">&#39;item_number&#39;</span><span class="p">,</span><span class="s1">&#39;description_2&#39;</span><span class="p">]]</span>
+        <span class="n">itm_num_desc2</span> <span class="o">=</span> <span class="n">itm_num_desc2</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;description_2&#39;</span><span class="p">)</span>
+        <span class="n">equivalences</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prt_num</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itm_num_desc2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">itm_num_desc2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;item_number&#39;</span><span class="p">])</span><span class="o">==</span><span class="mi">6</span><span class="p">:</span>
+                    <span class="n">equivalences</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span> <span class="n">itm_num_desc2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;item_number&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drawings</span> <span class="o">=</span> <span class="n">equivalences</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>add column</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">drawing_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spl</span><span class="p">[</span><span class="s1">&#39;part_number&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drawings</span><span class="p">,</span> <span class="n">na_action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">del_templates</span><span class="p">():</span>
+        <span class="kn">import</span> <span class="nn">os</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">output_1</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">output_2</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

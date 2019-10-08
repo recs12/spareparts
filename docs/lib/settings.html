@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>settings.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>settings.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>tempo-files-location (jde_temp, db)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">tempo_local</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;T:\tempo\recs&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>name of temporary jde</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">temp_jde</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;temporary_jde.csv&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Excel extracted settings</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">excel_headers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Item Number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Quantity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Equipment&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Module&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Level of significance&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Category&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Information&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UOM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ST&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Description 1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Description 2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Search Text&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Unit Cost&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Extended Cost&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;jdelitm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prp1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prp2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;file_name&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Type&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DIM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Comm Class&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Supplier&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Item Pool&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Drawing2&quot;</span><span class="p">,</span>
+<span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>equivalent -&gt;  Excel position &amp; columns name of the data
+e.g. the data in excel column &lsquo;A2&rsquo; is from  spl.part_number
+  column: spl(dataframe)  #Title in Spl</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">dict_header</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A2&quot;</span><span class="p">:</span> <span class="s2">&quot;part_number&quot;</span><span class="p">,</span>        <span class="c1"># &quot;Item Number&quot;</span>
+    <span class="s2">&quot;B2&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>             <span class="c1"># &quot;Number(Drawing)&quot;</span>
+    <span class="s2">&quot;C2&quot;</span><span class="p">:</span> <span class="s2">&quot;quantity&quot;</span><span class="p">,</span>           <span class="c1"># &quot;Quantity&quot;</span>
+    <span class="s2">&quot;E2&quot;</span><span class="p">:</span> <span class="s2">&quot;module&quot;</span><span class="p">,</span>             <span class="c1"># &quot;Module&quot;,</span>
+    <span class="s2">&quot;F2&quot;</span><span class="p">:</span> <span class="s2">&quot;possibility&quot;</span><span class="p">,</span>        <span class="c1"># &quot;Level of significance&quot;</span>
+    <span class="s2">&quot;I2&quot;</span><span class="p">:</span> <span class="s2">&quot;unit_of_measure&quot;</span><span class="p">,</span>    <span class="c1"># &quot;UOM&quot;</span>
+    <span class="s2">&quot;J2&quot;</span><span class="p">:</span> <span class="s2">&quot;stocking_type&quot;</span><span class="p">,</span>      <span class="c1"># &quot;ST&quot;</span>
+    <span class="s2">&quot;K2&quot;</span><span class="p">:</span> <span class="s2">&quot;description_1&quot;</span><span class="p">,</span>      <span class="c1"># &quot;Description 1&quot;</span>
+    <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="s2">&quot;description_2&quot;</span><span class="p">,</span>      <span class="c1"># &quot;Description 2&quot;</span>
+    <span class="s2">&quot;M2&quot;</span><span class="p">:</span> <span class="s2">&quot;search_text&quot;</span><span class="p">,</span>        <span class="c1"># &quot;Search Text&quot;</span>
+    <span class="s2">&quot;N2&quot;</span><span class="p">:</span> <span class="s2">&quot;unit_cost&quot;</span><span class="p">,</span>          <span class="c1"># &quot;UOM&quot;</span>
+    <span class="s2">&quot;P2&quot;</span><span class="p">:</span> <span class="s2">&quot;jdelitm&quot;</span><span class="p">,</span>            <span class="c1"># &quot;jdelitm&quot;,</span>
+    <span class="s2">&quot;Q2&quot;</span><span class="p">:</span> <span class="s2">&quot;description_prp1&quot;</span><span class="p">,</span>   <span class="c1"># &quot;prp1&quot;,</span>
+    <span class="s2">&quot;R2&quot;</span><span class="p">:</span> <span class="s2">&quot;description_prp2&quot;</span><span class="p">,</span>   <span class="c1"># &quot;prp2&quot;,</span>
+    <span class="s2">&quot;S2&quot;</span><span class="p">:</span> <span class="s2">&quot;file_name&quot;</span><span class="p">,</span>          <span class="c1"># &quot;file_name&quot;</span>
+    <span class="s2">&quot;T2&quot;</span><span class="p">:</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span>               <span class="c1"># &quot;Type&quot;,</span>
+    <span class="s2">&quot;U2&quot;</span><span class="p">:</span> <span class="s2">&quot;dim&quot;</span><span class="p">,</span>                <span class="c1"># &quot;DIM&quot;</span>
+    <span class="s2">&quot;V2&quot;</span><span class="p">:</span> <span class="s2">&quot;comm_class&quot;</span><span class="p">,</span>         <span class="c1"># &quot;Comm Class&quot;</span>
+    <span class="s2">&quot;W2&quot;</span><span class="p">:</span> <span class="s2">&quot;item_pool&quot;</span><span class="p">,</span>          <span class="c1"># &quot;Item Pool&quot;</span>
+    <span class="s2">&quot;X2&quot;</span><span class="p">:</span> <span class="s2">&quot;supplier&quot;</span><span class="p">,</span>           <span class="c1"># &quot;Supplier&quot;</span>
+<span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Headers colors of the cells in Excel.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">headers_bg_hue</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A1:H1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">235</span><span class="p">,</span> <span class="mi">247</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span> <span class="c1"># yellow</span>
+                 <span class="s2">&quot;I1:Z1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">183</span><span class="p">,</span> <span class="mi">185</span><span class="p">,</span> <span class="mi">188</span><span class="p">),</span> <span class="c1"># grey</span>
+                <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Parts you find in a gripper that does not need to be in the spl.
+Only the main assembly is kept in the Spl.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">contents_of_gripper</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;PT1124830&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PT0078604&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PT0078603&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24104091&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24101598&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24101597&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;171257&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;171259&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;171256&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;171255&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24100056&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PT0078602&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PT0078601&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EEG58C7007P-1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24100360&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EEG58C6002P-6&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;54010220&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24300030&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24104854&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24104591&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;24104548&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;122896&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;122857&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;162925_EEG58C&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;171228&quot;</span><span class="p">,</span>
+<span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>&ldquo;162922&rdquo;, #(remove ALBP: 2019-09-16)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>File names</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">output_1</span> <span class="o">=</span> <span class="s2">&quot;template(0).xlsx&quot;</span>
+<span class="n">output_2</span> <span class="o">=</span> <span class="s2">&quot;template(1).xlsx&quot;</span>
+<span class="n">output_3</span> <span class="o">=</span> <span class="s2">&quot;SPL.xlsx&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Colors:</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">orange</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span>  <span class="c1"># electric</span>
+<span class="n">mauve</span> <span class="o">=</span> <span class="p">(</span><span class="mi">157</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>  <span class="c1"># mauve  Item O ou U</span>
+<span class="n">blue</span> <span class="o">=</span> <span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">106</span><span class="p">,</span> <span class="mi">232</span><span class="p">)</span>  <span class="c1"># blue  -   Item tjrs à revalider</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

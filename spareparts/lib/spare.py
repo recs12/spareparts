@@ -1,8 +1,8 @@
+import sys
 import bashplotlib
 import numpy as np
 import pandas as pd
 import xlwings as xw
-import termgraph
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment
 
@@ -533,7 +533,8 @@ class Spareparts(object):
         self.garbage = pd.concat([self.garbage, _stud]).drop_duplicates(keep=False)
         Spareparts.log_report(_stud, "_stud")
 
-
+        
+        self.spl = self.spl.drop_duplicates(keep=False) #remove all duplicates
         self.asm = _asm
         self.elec = _elec
         self.nuts = _nuts
@@ -543,10 +544,10 @@ class Spareparts(object):
     def equivalences(self):
         """return dictionnary > {ptnumber:drawing number}"""
         prt_num = self.spl.part_number
-        prt_num = prt_num[prt_num.str.contains(r'PT\d{7}|EEG|EPT', na=False, regex=True)] #debug r'PT\d{7}|EEG|EPT'
+        prt_num = prt_num[prt_num.str.contains(r'\bPT\d{7}\b|\bEEG.*\b|\bEPT.*\b', na=False, regex=True)] #debug r'PT\d{7}|EEG|EPT'
         prt_num = prt_num.str.strip().tolist()
-        itm_num_desc2 = self.jde[['item_number','description_2']]
-        itm_num_desc2 = itm_num_desc2.set_index('description_2')
+        itm_num_desc2 = self.jde[['item_number','drawing_number']]
+        itm_num_desc2 = itm_num_desc2.set_index('drawing_number')
         equivalences = {}
         for i in prt_num:
             if i in itm_num_desc2.index.tolist():
