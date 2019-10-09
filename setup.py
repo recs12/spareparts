@@ -8,7 +8,7 @@ with open('spareparts/__init__.py', 'r') as f:
             version = line.strip().split('=')[1].strip(' \'"')
             break
     else:
-        version = '1.0.6'
+        version = '1.0.7'
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     readme = f.read()
