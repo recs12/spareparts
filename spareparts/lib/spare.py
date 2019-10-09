@@ -550,6 +550,13 @@ class Spareparts(object):
         self.garbage = pd.concat([self.garbage, _transparent]).drop_duplicates(keep=False)
         Spareparts.log_report(_transparent, "_transparent")
 
+        # === _hoffman_pkg ===
+        self.spl, self.garbage, _hoffman_pkg = trash_item_number(
+            self.spl, self.garbage, list_parts=["PT1173377","PT1173378"]
+        )
+        self.garbage = pd.concat([self.garbage, _hoffman_pkg]).drop_duplicates(keep=False)
+        Spareparts.log_report(_hoffman_pkg, "_hoffman_pkg")
+
         self.spl = self.spl.drop_duplicates(keep=False) #remove all duplicates
         self.asm = _asm
         self.elec = _elec
