@@ -159,7 +159,7 @@ class Levels:
     def fill_zero(self):
         self.levels["possibility"].fillna(0, inplace=True)
 
-    def create_csv(self, name="db.csv"):
+    def create_csv(self, name="levels.csv"):
         self.levels.to_csv(name, index=False)
         print(f"\nTask compeleted: -> {name} created")
 
@@ -194,15 +194,11 @@ class Levels:
         ambiguous_items = ambiguous["item_number"].tolist()
         modules_levels = self.modules.tolist()
         modules_levels # [16, 17, ... ,99]
-        print(f"modules_levels: {modules_levels}")
-        print(self.brut.columns) #['item_number', 'module', 'level']
         data_available = self.brut.item_number.tolist()
         for item in ambiguous_items:
             if item in data_available:
                 value_level = self.brut.set_index(['item_number','module'])
                 value_level = value_level.xs(item, level='item_number') # columns: module, level
-                # print(value_level.info()) # level::int
-                # print(value_level.index)  # index columns::object
                 for mod in modules_levels:
                     if mod in value_level.index:
                         level = value_level.loc[mod,'level']
