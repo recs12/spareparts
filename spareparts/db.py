@@ -5,9 +5,11 @@ from glob import glob
 import os
 import sys
 import warnings
+
 warnings.filterwarnings("ignore", "This pattern has match groups")
 import pandas as pd
 import click
+
 
 class Levels:
     """
@@ -17,7 +19,11 @@ class Levels:
 
     def __init__(self):
         self.loc = os.getcwd()
-        self.spls = [spreadsheet.name for spreadsheet in os.scandir(self.loc) if spreadsheet.name.endswith(".xlsm")]
+        self.spls = [
+            spreadsheet.name
+            for spreadsheet in os.scandir(self.loc)
+            if spreadsheet.name.endswith(".xlsm")
+        ]
         self.levels = pd.concat(
             [Levels.extract_levels(file) for file in self.spls], ignore_index=True
         )
@@ -125,7 +131,7 @@ class Levels:
             "Level 3: Complete Parts Inventory",
             "module",
         ].sum()
-        #add the missing columns at the end of the method
+        # add the missing columns at the end of the method
 
     def insert_bool_columns(self):
         self.levels["L1"] = (
@@ -193,16 +199,18 @@ class Levels:
         ]
         ambiguous_items = ambiguous["item_number"].tolist()
         modules_levels = self.modules.tolist()
-        modules_levels # [16, 17, ... ,99]
+        modules_levels  # [16, 17, ... ,99]
         data_available = self.brut.item_number.tolist()
         for item in ambiguous_items:
             if item in data_available:
-                value_level = self.brut.set_index(['item_number','module'])
-                value_level = value_level.xs(item, level='item_number') # columns: module, level
+                value_level = self.brut.set_index(["item_number", "module"])
+                value_level = value_level.xs(
+                    item, level="item_number"
+                )  # columns: module, level
                 for mod in modules_levels:
                     if mod in value_level.index:
-                        level = value_level.loc[mod,'level']
-                        self.levels.loc[self.levels.item_number==item ,mod] = level
+                        level = value_level.loc[mod, "level"]
+                        self.levels.loc[self.levels.item_number == item, mod] = level
 
 
 if __name__ == "__main__":
@@ -221,5 +229,5 @@ if __name__ == "__main__":
     db.set_values_modules()
     db.create_csv()
 
-#TODO: Change name to "levels+ date" of genereted file add date on file name 
-#TODO: clean up print out on display when running the macro
+# TODO: Change name to "levels+ date" of genereted file add date on file name
+# TODO: clean up print out on display when running the macro

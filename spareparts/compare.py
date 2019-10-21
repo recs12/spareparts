@@ -11,15 +11,14 @@ from spareparts.lib.settings import tempo_local, temp_jde
 if os.path.join(tempo_local, temp_jde):
     path_to_jde = os.path.join(tempo_local, temp_jde)
 else:
-    print('the temporary jde file is not in the TEMPO of RECS')
+    print("the temporary jde file is not in the TEMPO of RECS")
+
 
 def extract_items_auto(file):
     """
     Extraction column: item number
     """
-    data = pd.read_excel(
-        file, sheet_name="spl", header=0, usecols="A", dtype={0: str}
-    )
+    data = pd.read_excel(file, sheet_name="spl", header=0, usecols="A", dtype={0: str})
     data["Item Number"] = data["Item Number"].str.strip()
     data = data.dropna(how="all")
     serie = pd.Series(data["Item Number"])
@@ -73,6 +72,7 @@ def delta(spl1, spl2):
 def main(spl1, spl2):
     click.echo(spl1)
     click.echo(spl2)
+    #TODO: Check the name of files to compare.
     df = pd.DataFrame(delta(spl1, spl2), columns=["item_number"])
     jde = load_jde_data()
     parts = joining_spl_jde(jde, df)
@@ -83,5 +83,4 @@ if __name__ == "__main__":
     main()
 
 
-#TODO: Can compare pneumatic list option
-#TODO: build snippet todo.
+# TODO: Can compare pneumatic list option
