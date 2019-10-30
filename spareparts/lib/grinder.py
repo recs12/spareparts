@@ -117,7 +117,7 @@ def trash_description(spl, garbage, keyword, description="description_1"):
 
 @special_desc_1(r"O-RING-NITRILE")
 @special_pt("157930")
-def trash_fastener(spl, garbage, prp1=["50", "90"]):
+def trash_fastener(spl, garbage, prp1=['50', '90']):
     """Filter for fastener"""
     relocate = spl[spl.comm_class.isin(prp1)]
     spl = spl[~spl.comm_class.isin(prp1)]
@@ -236,10 +236,6 @@ class Colors(object):
 
 class Spareparts(object):
     """Generate spareparts list."""
-
-    JDEPATH = (
-        r"Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx"
-    )
     JDE_TEMP = os.path.join(tempo_local, temp_jde)
 
     def __init__(self, model):
@@ -791,6 +787,10 @@ class Spareparts(object):
         #--------------------------------------------------------------------#
 
         self.spl = self.spl.drop_duplicates(keep=False)
+        self.asm = _asm
+        self.elec = _elec
+        self.nuts = _nuts
+        self.plates = _plates
         # Garbage include all filtered parts
         self.garbage =  pd.concat([self.garbage,
                                     _uncatego,
@@ -814,11 +814,6 @@ class Spareparts(object):
                                     _transparent,
                                     _hoffman_pkg,
                                     ], ignore_index=True, sort=False).drop_duplicates(keep=False)
-        self.asm = _asm
-        self.elec = _elec
-        self.nuts = _nuts
-        self.plates = _plates
-
 
     def equivalences(self):
         """return dictionnary > {ptnumber:drawing number}"""

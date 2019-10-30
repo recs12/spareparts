@@ -1,5 +1,8 @@
 import os
 
+#INV-PTP-JDE
+JDEPATH = r"Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx"
+
 # tempo-files-location (jde_temp, db)
 tempo_local = r"T:\tempo\recs"
 

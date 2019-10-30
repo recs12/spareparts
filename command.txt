@@ -1,1 +1,1 @@
-pyinstaller cli.py --name grinder --onefile -i grinder.ico
+pyinstaller cli.py --name spareparts --onefile -i grinder.ico
