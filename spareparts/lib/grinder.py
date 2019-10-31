@@ -238,11 +238,9 @@ class Spareparts(object):
     """Generate spareparts list."""
     JDE_TEMP = os.path.join(tempo_local, temp_jde)
 
-    def __init__(self, model):
-        self.model = model
+    def __init__(self):
         self.jde = self.load_jde_data()
         self.db = pd.DataFrame()
-
         self.spl = pd.DataFrame()
         self.asm = pd.DataFrame()
         self.elec = pd.DataFrame()
@@ -263,18 +261,22 @@ class Spareparts(object):
             sys.exit()
 
     def generate_spl(self):
-        files = (file for file in Spareparts.listing_txt_files())
-        parts = pd.concat(
-            [Spareparts.extract_data(file) for file in files], ignore_index=True
-        )
-        self.spl = Spareparts.joining_spl_jde(self.jde, parts)
-        self.spl.part_number = (
-            self.spl.part_number.str.strip()
-        )  # strip part_number column
+        has_text_reports =  os.listdir('.')
+        if not has_text_reports:
+            raise FileNotFoundError('No text file report has been found in the current folder.')
+        else:
+            files = (file for file in Spareparts.listing_txt_files())
+            parts = pd.concat(
+                [Spareparts.extract_data(file) for file in files], ignore_index=True
+            )
+            self.spl = Spareparts.joining_spl_jde(self.jde, parts)
+            self.spl.part_number = (
+                self.spl.part_number.str.strip()
+            )  # strip part_number column
 
-    def load_db(self, model):
-        """load the item-level database"""
-        db_model = os.path.join(tempo_local, model)
+    def load_db(self):
+        """Load the item-level database"""
+        db_model = os.path.join(tempo_local, 'levels.csv')
         if not os.path.exists(db_model):
             self.db = pd.DataFrame()
         else:
@@ -578,10 +580,38 @@ class Spareparts(object):
         Spareparts.log_report(_robot, "_robot")
 
         # === gripper ===
+
+        contents_of_gripper = [
+            "PT1124830",
+            "PT0078604",
+            "PT0078603",
+            "24104091",
+            "24101598",
+            "24101597",
+            "171257",
+            "171259",
+            "171256",
+            "171255",
+            "24100056",
+            "PT0078602",
+            "PT0078601",
+            "EEG58C7007P-1",
+            "24100360",
+            "EEG58C6002P-6",
+            "54010220",
+            "24300030",
+            "24104854",
+            "24104591",
+            "24104548",
+            "122896",
+            "122857",
+            "162925_EEG58C",
+            "171228",
+        ]
         self.spl, self.garbage, _inside_gripper = trash_item_number(
             self.spl,
             self.garbage,
-            list_parts=contents_of_gripper,  # The contents of gripper in the file settings.
+            list_parts=contents_of_gripper,
         )
         self.garbage = pd.concat([self.garbage, _inside_gripper]).drop_duplicates(
             keep=False

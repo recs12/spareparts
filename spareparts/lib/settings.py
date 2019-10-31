@@ -1,15 +1,17 @@
 import os
 
-#INV-PTP-JDE
+# PT User
+ACRONYM = os.environ.get('USERNAME')
+
+# INV-PTP-JDE (local)
 JDEPATH = r"Z:\Pour membres de MHPS\SUIVI DE LA FABRICATION\Item PTP JDE\INV-PTP-JDE.xlsx"
 
 # tempo-files-location (jde_temp, db)
-tempo_local = r"T:\tempo\recs"
+tempo_local = os.path.join(r"T:\tempo", ACRONYM)
 
 
 # name of temporary jde
 temp_jde = r"temporary_jde.csv"
-
 
 # Excel extracted settings
 excel_headers = [
@@ -67,42 +69,8 @@ dict_header = {
     "X2": "supplier",  # "Supplier"
 }
 
-
 # Headers colors of the cells in Excel.
 headers_bg_hue = {"A1:H1": (235, 247, 133), "I1:Z1": (183, 185, 188)}  # yellow  # grey
-
-
-# Parts you find in a gripper that does not need to be in the spl.
-# Only the main assembly is kept in the Spl.
-contents_of_gripper = [
-    "PT1124830",
-    "PT0078604",
-    "PT0078603",
-    "24104091",
-    "24101598",
-    "24101597",
-    "171257",
-    "171259",
-    "171256",
-    "171255",
-    "24100056",
-    "PT0078602",
-    "PT0078601",
-    "EEG58C7007P-1",
-    "24100360",
-    "EEG58C6002P-6",
-    "54010220",
-    "24300030",
-    "24104854",
-    "24104591",
-    "24104548",
-    "122896",
-    "122857",
-    "162925_EEG58C",
-    "171228",
-]
-# "162922", #(remove ALBP: 2019-09-16)
-
 
 # File names
 output_1 = "template(0).xlsx"
