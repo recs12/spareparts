@@ -7,7 +7,10 @@ import xlwings as xw
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment
 from loguru import logger
+from bashplotlib.histogram import plot_hist
 from spareparts.lib.settings import *
+import pyfiglet
+from spareparts.lib.settings import JDEPATH
 
 
 def special_pt(regx):
@@ -247,11 +250,15 @@ class Spareparts(object):
         self.garbage = pd.DataFrame()
         self.nuts = pd.DataFrame()
         self.plates = pd.DataFrame()
+        self.gearbox = pd.DataFrame()
         self.drawings = {}
 
     @staticmethod
     def prompt_confirmation():
         "ask user to resume the program"
+        from pyfiglet import Figlet
+        custom_fig = Figlet(font='graffiti')
+        print(custom_fig.renderText('Spareparts'))
         print(f"Run: {__file__}")
         answer = input("Proceed ([y]/n) ?:  ")
         if answer.lower() in ["yes", "y"]:
@@ -324,9 +331,9 @@ class Spareparts(object):
     def extract_jde():
         """"""
         # add a try - except (in case the file is not found)
-        print(f"Path: PTP-JDE: {Spareparts.JDEPATH}\n-> Loading the JDE Inventory...")
+        print(f"Path: PTP-JDE: {JDEPATH}\n-> Loading the JDE Inventory...")
         df = pd.read_excel(
-            Spareparts.JDEPATH,
+            JDEPATH,
             sheet_name=0,
             skiprows=[0, 1, 2, 3],
             usecols="A,C,P,E,H,I,K,O,U,X,AA,AR,AT,CB",
@@ -420,14 +427,8 @@ class Spareparts(object):
             f"nuts      :\t{self.nuts.shape[0]}\n"
             "-------------------------\n"
         )
-        # TODO: Bashplotlib
-        # from bashplotlib.horizontal_histogram import plot_horiz_hist
-
-        # plot_horiz_hist(
-        #     'scratch_data.txt',
-        #     title='Horizontal Histogram!',
-        #     ylab=True,
-        #     show_summary=True)
+        # TODO: Bashplotlib error display
+        # plot_hist( f=[1,2,3], height=5, title='spl', pch='x')
 
     def create_excel(self, given_name_xlsx):
         """fill the tabs in excel file with the dataframes"""
@@ -436,6 +437,7 @@ class Spareparts(object):
             "asm": self.asm,
             "plates": self.plates,
             "elec": self.elec,
+            "gearbox": self.gearbox,
             "garbage": self.garbage,
             "spl": self.spl,
         }
@@ -603,8 +605,6 @@ class Spareparts(object):
             "24104854",
             "24104591",
             "24104548",
-            "122896",
-            "122857",
             "162925_EEG58C",
             "171228",
         ]
@@ -653,16 +653,6 @@ class Spareparts(object):
         )
         self.garbage = pd.concat([self.garbage, _grommet]).drop_duplicates(keep=False)
         Spareparts.log_report(_grommet, "_grommet")
-
-        # === _manif ===
-        self.spl, self.garbage, _manif = trash_description(
-            self.spl,
-            self.garbage,
-            keyword=r"PNEU.VALVE\sMANIFOLD\s[\d/\d\:\d{2}|\d\:\d{2}]",
-            description="description_1",
-        )
-        self.garbage = pd.concat([self.garbage, _manif]).drop_duplicates(keep=False)
-        Spareparts.log_report(_manif, "_manif")
 
         # === _pneu_frl ===
         self.spl, self.garbage, _pneu_frl = trash_description(
@@ -721,8 +711,6 @@ class Spareparts(object):
         self.garbage = pd.concat([self.garbage, _P1_A1]).drop_duplicates(keep=False)
         Spareparts.log_report(_P1_A1, "_P1_A1")
 
-        # === _housed_cap ===
-        """ALBP(2019-09-16): House-brg-cap kept in SPL."""
 
         # === _collar ===
         collar = r"COLLAR"
@@ -812,6 +800,14 @@ class Spareparts(object):
         )
         Spareparts.log_report(_hoffman_pkg, "_hoffman_pkg")
 
+        # === EYE BOLT;SHOULDER ===
+        self.spl, self.garbage, _eye = trash_description(
+            self.spl, self.garbage, keyword="EYE BOLT;SHOULDER"
+        )
+        self.garbage = pd.concat([self.garbage, _weldnut]).drop_duplicates(keep=False)
+        Spareparts.log_report(_eye, "_eye")
+
+
         #--------------------------------------------------------------------#
         #                           END FILTERS HERE                         #
         #--------------------------------------------------------------------#
@@ -821,6 +817,7 @@ class Spareparts(object):
         self.elec = _elec
         self.nuts = _nuts
         self.plates = _plates
+        self.gearbox = _gearbox
         # Garbage include all filtered parts
         self.garbage =  pd.concat([self.garbage,
                                     _uncatego,
@@ -828,7 +825,7 @@ class Spareparts(object):
                                     _industrial,
                                     _furniture,
                                     _grommet,
-                                    _manif,
+                                    # _manif,
                                     _pneu_frl,
                                     _clamp,
                                     _par,
@@ -843,6 +840,7 @@ class Spareparts(object):
                                     _weldnut,
                                     _transparent,
                                     _hoffman_pkg,
+                                    _eye,
                                     ], ignore_index=True, sort=False).drop_duplicates(keep=False)
 
     def equivalences(self):

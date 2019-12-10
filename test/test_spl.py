@@ -11,3 +11,7 @@ from  spareparts.lib.spare import Spareparts
 
 # def test_answer():
 #     assert func(3) == 4
+
+
+
+#TODO: tweek the Spareparts class to test xlsx sample file filter.

@@ -1,1 +1,0 @@
-pyinstaller cli.py --name spareparts --onefile -i grinder.ico
