@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['cli.py'],
+a = Analysis(['spareparts\\__main__.py'],
              pathex=['C:\\Users\\recs\\Documents\\PT_Documents\\scripts\\spareparts'],
              binaries=[],
              datas=[],
@@ -29,4 +29,4 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=True , icon='grinder.ico')
+          console=False , icon='resource\\icon.ico')

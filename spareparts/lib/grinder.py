@@ -120,7 +120,7 @@ def trash_description(spl, garbage, keyword, description="description_1"):
 
 @special_desc_1(r"O-RING-NITRILE")
 @special_pt("157930")
-def trash_fastener(spl, garbage, prp1=['50', '90']):
+def trash_fastener(spl, garbage, prp1=[50, '50', 90, '90']):
     """Filter for fastener"""
     relocate = spl[spl.comm_class.isin(prp1)]
     spl = spl[~spl.comm_class.isin(prp1)]
@@ -804,7 +804,7 @@ class Spareparts(object):
         self.spl, self.garbage, _eye = trash_description(
             self.spl, self.garbage, keyword="EYE BOLT;SHOULDER"
         )
-        self.garbage = pd.concat([self.garbage, _weldnut]).drop_duplicates(keep=False)
+        self.garbage = pd.concat([self.garbage, _weldnut], sort=True).drop_duplicates(keep=False)
         Spareparts.log_report(_eye, "_eye")
 
 
