@@ -70,19 +70,19 @@ class Levels:
         # #01 >>> 01
         pat = r"#(?P<numero>\d\d).*"
         repl = lambda m: m.group("numero")
-        self.brut["module"] = self.brut["module"].str.replace(pat, repl, regex=True)
+        self.brut.loc[:,"module"] = self.brut["module"].str.replace(pat, repl, regex=True)
         # 01-AAA >>> 01
         pat = r"(?P<numero>\d\d).*"
         repl = lambda m: m.group("numero")
-        self.brut["module"] = self.brut["module"].str.replace(pat, repl, regex=True)
-        self.brut["module"] = self.brut["module"].str.replace(
+        self.brut.loc[:,"module"] = self.brut.loc[:,"module"].str.replace(pat, repl, regex=True)
+        self.brut.loc[:,"module"] = self.brut.loc[:,"module"].str.replace(
             "^1$", "01", regex=True
         )  # 1 >>> 01
-        self.brut["module"] = self.brut["module"][
-            self.brut["module"] != "0"
+        self.brut.loc[:,"module"] = self.brut["module"][
+            self.brut.loc[:,"module"] != "0"
         ]  # remove 0
-        self.brut["module"] = self.brut["module"][
-            self.brut["module"].str.len() == 2
+        self.brut.loc[:,"module"] = self.brut["module"][
+            self.brut.loc[:,"module"].str.len() == 2
         ]  # only the two caracter long module name kept
         self.brut = self.brut.dropna(
             subset=["item_number", "module"]
@@ -94,7 +94,6 @@ class Levels:
         self.brut = self.brut.drop_duplicates(
             subset=["item_number", "module"], keep="first"
         )
-        # self.brut.to_csv("brut.csv", index=False)
 
     @staticmethod
     def extract_levels(file):
