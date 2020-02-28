@@ -386,6 +386,7 @@ class Spareparts(object):
             print(f" [+][\t{module_number}\t]")
             return df
         except pd.errors.ParserError as parse_error:
+            # Wrong format of text extracted from solidedge.
             print(f" [-][{parse_error}]")
             sys.exit()
 
