@@ -268,6 +268,8 @@ class Spareparts(object):
             sys.exit()
 
     def generate_spl(self):
+        if os.path.exists('SPL.xlsx'):
+            raise FileExistsError('Remove or rename the SPL.xlsx in the current folder to able the process to run.')
         has_text_reports =  os.listdir('.')
         if not has_text_reports:
             raise FileNotFoundError('No text file report has been found in the current folder.')
@@ -285,7 +287,7 @@ class Spareparts(object):
         """Load the item-level database"""
         db_model = os.path.join(tempo_local, 'levels.csv')
         if not os.path.exists(db_model):
-            self.db = pd.DataFrame()
+            raise FileNotFoundError("No file levels.csv found in user tempo.\n")
         else:
             df = pd.read_csv(db_model, dtype={"possibility": str})
             df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
@@ -346,42 +348,46 @@ class Spareparts(object):
     @staticmethod
     def extract_data(fichier):
         """"""
-        # add try and except
-        df = pd.read_csv(
-            fichier,
-            delimiter="\t",
-            skiprows=[0, 2],
-            header=1,
-            names=[
-                "Part Number",
-                "Revision",
-                "DSC_A",
-                "JDELITM",
-                "DIM",
-                "Quantity",
-                "File Name",
-            ],
-            index_col=False,
-            encoding="latin3",
-            error_bad_lines=False,
-            na_values="-",
-        )
-        # clean the columns
-        df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
-        df["jdelitm"] = df["jdelitm"].str.strip()
-        df = Spareparts.replacing_C01(df)
-        df["quantity"] = pd.to_numeric(df["quantity"], errors="coerse")
-        df = df.groupby(
-            ["part_number", "revision", "dsc_a", "dim", "jdelitm", "file_name"],
-            as_index=False,
-        )["quantity"].sum()
-        df = df.replace(r"^-?\s+$", np.nan, regex=True)
-        df = df.dropna(subset=["part_number", "jdelitm"])
-        # give the module number
-        module_number = os.path.splitext(os.path.basename(fichier))[0]
-        df["module"] = module_number
-        print(f" [+][\t{module_number}\t]")
-        return df
+        try:
+            # add try and except
+            df = pd.read_csv(
+                fichier,
+                delimiter="\t",
+                skiprows=[0, 2],
+                header=1,
+                names=[
+                    "Part Number",
+                    "Revision",
+                    "DSC_A",
+                    "JDELITM",
+                    "DIM",
+                    "Quantity",
+                    "File Name",
+                ],
+                index_col=False,
+                encoding="latin3",
+                error_bad_lines=False,
+                na_values="-",
+            )
+            # clean the columns
+            df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+            df["jdelitm"] = df["jdelitm"].str.strip()
+            df = Spareparts.replacing_C01(df)
+            df["quantity"] = pd.to_numeric(df["quantity"], errors="coerce")
+            df = df.groupby(
+                ["part_number", "revision", "dsc_a", "dim", "jdelitm", "file_name"],
+                as_index=False,
+            )["quantity"].sum()
+            df = df.replace(r"^-?\s+$", np.nan, regex=True)
+            df = df.dropna(subset=["part_number", "jdelitm"])
+            # give the module number
+            module_number = os.path.splitext(os.path.basename(fichier))[0]
+            df["module"] = module_number
+            print(f" [+][\t{module_number}\t]")
+            return df
+        except pd.errors.ParserError as parse_error:
+            print(f" [-][{parse_error}]")
+            sys.exit()
 
     @staticmethod
     def listing_txt_files():

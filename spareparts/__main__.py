@@ -41,7 +41,9 @@ def main():
         machine.colors_excel(output_2, output_3)
         machine.del_templates()
     except FileNotFoundError as err:
-        print(err)
+        print(f"[!][{err}]")
+    except FileExistsError as err:
+        print(f"[!][{err}]")
     else:
         pass
     finally:
