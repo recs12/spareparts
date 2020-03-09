@@ -811,9 +811,15 @@ class Spareparts(object):
         self.spl, self.garbage, _eye = trash_description(
             self.spl, self.garbage, keyword="EYE BOLT;SHOULDER"
         )
-        self.garbage = pd.concat([self.garbage, _weldnut], sort=True).drop_duplicates(keep=False)
+        self.garbage = pd.concat([self.garbage, _eye], sort=True).drop_duplicates(keep=False)
         Spareparts.log_report(_eye, "_eye")
 
+        # === POLYCARBONATE PLATE ===
+        self.spl, self.garbage, _polycarbonate = trash_description(
+            self.spl, self.garbage, keyword="POLYCARBONATE PLATE"
+        )
+        self.garbage = pd.concat([self.garbage, _polycarbonate], sort=True).drop_duplicates(keep=False)
+        Spareparts.log_report(_polycarbonate, "_polycarbonate")
 
         #--------------------------------------------------------------------#
         #                           END FILTERS HERE                         #
@@ -848,6 +854,7 @@ class Spareparts(object):
                                     _transparent,
                                     _hoffman_pkg,
                                     _eye,
+                                    _polycarbonate,
                                     ], ignore_index=True, sort=False).drop_duplicates(keep=False)
 
     def equivalences(self):
