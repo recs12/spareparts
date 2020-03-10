@@ -2,10 +2,39 @@
 # 2019-03-27 by recs
 # ===check the current owner of type licenses===
 
-import click
 import pandas as pd
 import os
 from spareparts.lib.settings import tempo_local, temp_jde
+import click
+
+index_manual = ['How to fill fileds in the Data Tab', 'Unnamed: 1', 'Unnamed: 2']
+
+index_auto = ['Item Number',
+    'Number(Drawing)',
+    'Quantity',
+    'Equipment',
+    'Module',
+    'Level of significance',
+    'Category',
+    'Other Information',
+    'UOM',
+    'ST',
+    'Description 1',
+    'Description 2',
+    'Search Text',
+    'Unit Cost',
+    'Extended Cost',
+    'jdelitm',
+    'prp1',
+    'prp2',
+    'file_name',
+    'Type',
+    'DIM',
+    'Comm Class',
+    'Supplier',
+    'Item Pool'
+]
+
 
 # Path to temporary_jde.csv in windows OS.
 if os.path.join(tempo_local, temp_jde):
@@ -39,15 +68,15 @@ def extract_items_manual(file):
     return set(serie)
 
 
-def parsing_items(spl):
-    name_file = str(spl)
-    if name_file.startswith("std"):
+def parsing_items(name_file):
+    name_file = str(name_file)
+    if pd.read_excel(name_file).columns.tolist() == index_manual:
         return extract_items_manual(name_file)
-    elif name_file.startswith("auto"):
+    elif pd.read_excel(name_file).columns.tolist() == index_auto:
         return extract_items_auto(name_file)
     else:
         print(
-            f"[Warning] file name: {spl} not reconized, file should start with auto.. or std.."
+            f"[WARNING] : {name_file} : Wrong file format, only auto or standard sparepart list."
         )
 
 
@@ -66,21 +95,16 @@ def delta(spl1, spl2):
     return sorted(list(parsing_items(spl1) - parsing_items(spl2)))
 
 
-@click.command()
-@click.argument("spl1", nargs=1)
-@click.argument("spl2", nargs=1)
-def main(spl1, spl2):
-    click.echo(spl1)
-    click.echo(spl2)
+def differences(spl1, spl2):
     #TODO: Check the name of files to compare.
     df = pd.DataFrame(delta(spl1, spl2), columns=["item_number"])
     jde = load_jde_data()
     parts = joining_spl_jde(jde, df)
-    parts.to_csv("difference.csv", index=False)
+    parts.to_csv("differences.csv", index=False)
+    # TODO: Add message excecution
+    # TODO: [INFO] same files.
+    # TODO: [INFO] diff.csv already exist.
 
-
-if __name__ == "__main__":
-    main()
 
 
 # TODO: Can compare pneumatic list option

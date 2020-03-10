@@ -1,18 +1,6 @@
 #!python3
 # -*- coding: utf-8 -*-
 
-"""
-1. **Generate spl**
-python -m spareparts
-
-2. **Generate level data in the tempo**
-python -m spareparts.db
-
-3. **Compare two spareparts lists**
-python -m spareparts.compare
-
-"""
-
 from loguru import logger
 import functools
 from glob import glob
@@ -23,9 +11,27 @@ import xlwings as xw
 from spareparts.lib.grinder import Colors
 from spareparts.lib.grinder import Spareparts
 from spareparts.lib.settings import output_1, output_2, output_3
+import click
 
+from .db import generate_levels_report
+from .compare import differences
 
-def main():
+@click.group()
+def cli():
+    pass
+
+@cli.command()
+@click.argument("spl1", nargs=1)
+@click.argument("spl2", nargs=1)
+def compare(spl1, spl2):
+    differences(spl1, spl2)
+
+@cli.command()
+def levels():
+    generate_levels_report()
+
+@cli.command()
+def create():
     try:
         machine = Spareparts()
         machine.prompt_confirmation()
@@ -50,8 +56,8 @@ def main():
         pass
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    cli()
 
 # TODO: [1] empty folder handling
 # TODO: [1] write docs > pycco (print paper format tabloid)
@@ -59,5 +65,4 @@ if __name__ == "__main__":
 # TODO: [3] write test:: strain by modifiying the class Spareparts
         #  e.g. test_Spareparts(Spareparts) = __init__: super().spl = pd.Dataframe()  empty it
         # then reinjecte sample of new data
-# TODO: [3] wrong format of txt file handling
 # TODO: [3] move loop to generator

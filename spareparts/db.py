@@ -8,7 +8,6 @@ import warnings
 
 warnings.filterwarnings("ignore", "This pattern has match groups")
 import pandas as pd
-import click
 
 
 class Levels:
@@ -212,7 +211,7 @@ class Levels:
                         self.levels.loc[self.levels.item_number == item, mod] = level
 
 
-if __name__ == "__main__":
+def generate_levels_report():
     db = Levels()
     db.proceed_validation()
     db.info()
