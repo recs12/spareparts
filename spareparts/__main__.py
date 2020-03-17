@@ -1,6 +1,7 @@
 #!python3
 # -*- coding: utf-8 -*-
 
+import click
 from loguru import logger
 import functools
 from glob import glob
@@ -13,7 +14,6 @@ from spareparts.lib.grinder import Colors
 from spareparts.lib.grinder import Spareparts
 from spareparts.lib.settings import output_1, output_2, output_3
 
-import click
 from spareparts.db import generate_levels_report
 from spareparts.compare import differences
 
