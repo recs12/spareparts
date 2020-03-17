@@ -9,7 +9,6 @@ from openpyxl.styles import Alignment
 from loguru import logger
 from bashplotlib.histogram import plot_hist
 from spareparts.lib.settings import *
-import pyfiglet
 from spareparts.lib.settings import JDEPATH
 
 
@@ -114,7 +113,7 @@ def trash_description(spl, garbage, keyword, description="description_1"):
     """description_1 OR description_2"""
     relocate = spl[spl[description].str.contains(keyword, na=False, regex=True)]
     spl = spl[~spl[description].str.contains(keyword, na=False, regex=True)]
-    garbage = pd.concat([garbage, relocate], ignore_index=True)
+    garbage = pd.concat([garbage, relocate], ignore_index=True, sort=False)
     return (spl, garbage, relocate)
 
 
@@ -256,9 +255,6 @@ class Spareparts(object):
     @staticmethod
     def prompt_confirmation():
         "ask user to resume the program"
-        from pyfiglet import Figlet
-        custom_fig = Figlet(font='graffiti')
-        print(custom_fig.renderText('Spareparts'))
         print(f"Run: {__file__}")
         answer = input("Proceed ([y]/n) ?:  ")
         if answer.lower() in ["yes", "y"]:
@@ -462,9 +458,10 @@ class Spareparts(object):
             for colum, data in dict_header.items():
                 sht.range(colum).options(index=False, header=False).value = df[data]
             sht.autofit()
-        wb.sheets["Sheet1"].delete()
+        wb.sheets[-1].delete()
         wb.save(given_name_xlsx)
         wb.close()
+        print(f"{output_1}: created")
 
     @staticmethod
     def edit_excel(file_name, new_name):
@@ -481,6 +478,7 @@ class Spareparts(object):
                 cell.alignment = Alignment(horizontal="center")
         wb.save(new_name)
         wb.close()
+        print(f"{output_2}: created.")
 
     def refine(self):
         ambiguous = self.spl[
@@ -528,6 +526,7 @@ class Spareparts(object):
             wb = Spareparts.add_colors(selected_file, tab)
         wb.save(new_file)
         wb.close()
+        print(f"{output_3}: created")
 
     @staticmethod
     def log_report(_df, df_name):
@@ -889,3 +888,4 @@ class Spareparts(object):
         import os
         os.remove(output_1)
         os.remove(output_2)
+        print(f"{output_1} - {output_2}: deleted.")

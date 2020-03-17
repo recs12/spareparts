@@ -5,7 +5,6 @@
 import pandas as pd
 import os
 from spareparts.lib.settings import tempo_local, temp_jde
-import click
 
 index_manual = ['How to fill fileds in the Data Tab', 'Unnamed: 1', 'Unnamed: 2']
 
