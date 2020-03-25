@@ -2,36 +2,39 @@
 # 2019-03-27 by recs
 # ===check the current owner of type licenses===
 
-import pandas as pd
 import os
-from spareparts.lib.settings import tempo_local, temp_jde
 
-index_manual = ['How to fill fileds in the Data Tab', 'Unnamed: 1', 'Unnamed: 2']
+import pandas as pd
 
-index_auto = ['Item Number',
-    'Number(Drawing)',
-    'Quantity',
-    'Equipment',
-    'Module',
-    'Level of significance',
-    'Category',
-    'Other Information',
-    'UOM',
-    'ST',
-    'Description 1',
-    'Description 2',
-    'Search Text',
-    'Unit Cost',
-    'Extended Cost',
-    'jdelitm',
-    'prp1',
-    'prp2',
-    'file_name',
-    'Type',
-    'DIM',
-    'Comm Class',
-    'Supplier',
-    'Item Pool'
+from spareparts.lib.settings import temp_jde, tempo_local
+
+index_manual = ["How to fill fileds in the Data Tab", "Unnamed: 1", "Unnamed: 2"]
+
+index_auto = [
+    "Item Number",
+    "Number(Drawing)",
+    "Quantity",
+    "Equipment",
+    "Module",
+    "Level of significance",
+    "Category",
+    "Other Information",
+    "UOM",
+    "ST",
+    "Description 1",
+    "Description 2",
+    "Search Text",
+    "Unit Cost",
+    "Extended Cost",
+    "jdelitm",
+    "prp1",
+    "prp2",
+    "file_name",
+    "Type",
+    "DIM",
+    "Comm Class",
+    "Supplier",
+    "Item Pool",
 ]
 
 
@@ -95,7 +98,7 @@ def delta(spl1, spl2):
 
 
 def differences(spl1, spl2):
-    #TODO: Check the name of files to compare.
+    # TODO: Check the name of files to compare.
     df = pd.DataFrame(delta(spl1, spl2), columns=["item_number"])
     jde = load_jde_data()
     parts = joining_spl_jde(jde, df)
@@ -103,7 +106,6 @@ def differences(spl1, spl2):
     # TODO: Add message excecution
     # TODO: [INFO] same files.
     # TODO: [INFO] diff.csv already exist.
-
 
 
 # TODO: Can compare pneumatic list option

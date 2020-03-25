@@ -1,13 +1,14 @@
 #!python3
 # -*- coding: utf-8 -*-
 
-from glob import glob
 import os
 import sys
 import warnings
+from glob import glob
+
+import pandas as pd
 
 warnings.filterwarnings("ignore", "This pattern has match groups")
-import pandas as pd
 
 
 class Levels:
@@ -69,19 +70,23 @@ class Levels:
         # #01 >>> 01
         pat = r"#(?P<numero>\d\d).*"
         repl = lambda m: m.group("numero")
-        self.brut.loc[:,"module"] = self.brut["module"].str.replace(pat, repl, regex=True)
+        self.brut.loc[:, "module"] = self.brut["module"].str.replace(
+            pat, repl, regex=True
+        )
         # 01-AAA >>> 01
         pat = r"(?P<numero>\d\d).*"
         repl = lambda m: m.group("numero")
-        self.brut.loc[:,"module"] = self.brut.loc[:,"module"].str.replace(pat, repl, regex=True)
-        self.brut.loc[:,"module"] = self.brut.loc[:,"module"].str.replace(
+        self.brut.loc[:, "module"] = self.brut.loc[:, "module"].str.replace(
+            pat, repl, regex=True
+        )
+        self.brut.loc[:, "module"] = self.brut.loc[:, "module"].str.replace(
             "^1$", "01", regex=True
         )  # 1 >>> 01
-        self.brut.loc[:,"module"] = self.brut["module"][
-            self.brut.loc[:,"module"] != "0"
+        self.brut.loc[:, "module"] = self.brut["module"][
+            self.brut.loc[:, "module"] != "0"
         ]  # remove 0
-        self.brut.loc[:,"module"] = self.brut["module"][
-            self.brut.loc[:,"module"].str.len() == 2
+        self.brut.loc[:, "module"] = self.brut["module"][
+            self.brut.loc[:, "module"].str.len() == 2
         ]  # only the two caracter long module name kept
         self.brut = self.brut.dropna(
             subset=["item_number", "module"]
@@ -226,6 +231,7 @@ def generate_levels_report():
     db.insert_col_modules()
     db.set_values_modules()
     db.create_csv()
+
 
 # TODO: Change name to "levels+ date" of genereted file add date on file name
 # TODO: clean up print out on display when running the macro

@@ -1,26 +1,29 @@
 #!python3
 # -*- coding: utf-8 -*-
 
-import click
-from loguru import logger
 import functools
+import os
+import sys
 from glob import glob
-import os, sys
+
+import logzero
 import numpy as np
 import pandas as pd
 import xlwings as xw
-from spareparts.lib.settings import ACRONYM
-from spareparts.lib.grinder import Colors
-from spareparts.lib.grinder import Spareparts
-from spareparts.lib.settings import output_1, output_2, output_3
+from loguru import logger
+from logzero import logger
 
-from spareparts.db import generate_levels_report
+import click
 from spareparts.compare import differences
-
+from spareparts.db import generate_levels_report
+from spareparts.lib.grinder import Colors, Spareparts
+from spareparts.lib.settings import ACRONYM, output_1, output_2, output_3
+from spareparts.lib.info import headlines
 
 @click.group()
 def cli():
     pass
+
 
 @cli.command(help="- Compare two spareparts.")
 @click.argument("spl1", nargs=1)
@@ -28,9 +31,11 @@ def cli():
 def compare(spl1, spl2):
     differences(spl1, spl2)
 
-@cli.command('create', help='- Generate spareparts list in an excel format.')
+
+@cli.command("create", help="- Generate spareparts list in an excel format.")
 def main():
     try:
+        print(headlines)
         machine = Spareparts()
         machine.prompt_confirmation()
         machine.generate_spl()
@@ -44,28 +49,27 @@ def main():
         machine.edit_excel(output_1, output_2)
         machine.colors_excel(output_2, output_3)
         machine.del_templates()
-        print('Process has been fully completed.')
+        logger.info("Process completed successfully.")
     except FileNotFoundError as err:
-        print(f"[!][{err}]")
+        logger.info(f"[!][{err}]")
     except FileExistsError as err:
-        print(f"[!][{err}]")
+        logger.info(f"[!][{err}]")
     else:
         pass
     finally:
         pass
 
-@cli.command(help= f"- Generate <level.csv> to store in T:\TEMPO\{ACRONYM}")
+
+@cli.command(help=f"- Generate <level.csv> to store in T:\TEMPO\{ACRONYM}")
 def levels():
     generate_levels_report()
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()
 
 # TODO: [1] empty folder handling
 # TODO: [1] write docs > pycco (print paper format tabloid)
 # TODO: [3] correction - close excel file at end of process
 # TODO: [3] write test:: strain by modifiying the class Spareparts
-        #  e.g. test_Spareparts(Spareparts) = __init__: super().spl = pd.Dataframe()  empty it
-        # then reinjecte sample of new data
+
