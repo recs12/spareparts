@@ -1,16 +1,7 @@
 #!python3
 # -*- coding: utf-8 -*-
 
-import functools
-import os
-import sys
-from glob import glob
-
 import logzero
-import numpy as np
-import pandas as pd
-import xlwings as xw
-from loguru import logger
 from logzero import logger
 
 import click
@@ -24,13 +15,15 @@ from spareparts.lib.info import headlines
 def cli():
     pass
 
-
 @cli.command(help="- Compare two spareparts.")
 @click.argument("spl1", nargs=1)
 @click.argument("spl2", nargs=1)
 def compare(spl1, spl2):
     differences(spl1, spl2)
 
+@cli.command("version")
+def version():
+    print("Spareparts 1.1.2")
 
 @cli.command("create", help="- Generate spareparts list in an excel format.")
 def main():
