@@ -4,17 +4,15 @@
 import os
 import sys
 import warnings
-from glob import glob
-
 import pandas as pd
-
+from pprint import PrettyPrinter
 warnings.filterwarnings("ignore", "This pattern has match groups")
 
 
 class Levels:
     """
     Determinate the level of parts.
-    It provides the .csv file being used with spareparts macro. 
+    It provides the .csv file being used with spareparts macro.
     """
 
     def __init__(self):
@@ -41,7 +39,9 @@ class Levels:
             sys.exit()
 
     def info(self):
-        print(self.spls)
+            print("SPL list:")
+            print("=========")
+            for doc in self.spls: print(f" - {doc}\n") #TODO: make a table of a list.
 
     def del_empty_rows(self):
         """Remove empty rows in column: item number"""
@@ -63,7 +63,7 @@ class Levels:
 
     def generate_brut(self):
         """
-        Brut dataframe is a support for creating <db.csv> 
+        Brut dataframe is a support for creating <db.csv>
         brut add to extra dimensional categories : equipment & module
         """
         self.brut = self.levels[["item_number", "module", "level"]]

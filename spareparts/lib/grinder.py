@@ -6,14 +6,15 @@ import xlwings as xw
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 from spareparts.lib.settings import *
-from spareparts.lib.settings import JDEPATH
 from logzero import logger
-from spareparts.lib.decorators import *
 from spareparts.lib.filters import *
-
-
+from spareparts.lib.settings import *
+import os
+from yaspin import yaspin, Spinner
+sp = Spinner([".", "o", "O", "@", "."], 200)
 
 class Colors(object):
+
     def electric(prp1, color):
         def _outer_wrapper(wrapped_function):
             @functools.wraps(wrapped_function)
@@ -89,12 +90,12 @@ class Spareparts(object):
     @staticmethod
     def prompt_confirmation():
         "ask user to resume the program"
-        print(f"Run: {__file__}")
+        logger.info(f"Run: {__file__}")
         answer = input("Proceed ([y]/n) ?:  ")
         if answer.lower() in ["yes", "y"]:
             pass
         else:
-            print("Process has stopped.")
+            logger.info("Process has stopped.")
             sys.exit()
 
     def generate_spl(self):
@@ -152,10 +153,11 @@ class Spareparts(object):
                 jde_temp = pd.read_csv(JDE_TEMP)
                 return jde_temp
             else:
-                print("Process interrupted.")
+                logger.info("Process interrupted.")
                 sys.exit()
         else:
-            jde_data = Spareparts.extract_jde()
+            with yaspin(sp, side="right", text="Loading the JDE Inventory..."):
+                jde_data = Spareparts.extract_jde()
             jde_data.to_csv(JDE_TEMP, index=False)
             return jde_data
 
@@ -163,7 +165,7 @@ class Spareparts(object):
     def extract_jde():
         """"""
         # add a try - except (in case the file is not found)
-        print(f"Path: PTP-JDE: {JDEPATH}\n-> Loading the JDE Inventory...")
+        # logger.info()
         df = pd.read_excel(
             JDEPATH,
             sheet_name=0,
@@ -213,11 +215,11 @@ class Spareparts(object):
             # give the module number
             module_number = os.path.splitext(os.path.basename(fichier))[0]
             df["module"] = module_number
-            print(f" [+][\t{module_number}\t]")
+            logger.info(f" [+][\t{module_number}\t]")
             return df
         except pd.errors.ParserError as parse_error:
             # Wrong format of text extracted from solidedge.
-            print(f" [-][{parse_error}]")
+            logger.info(f" [-][{parse_error}]")
             sys.exit()
 
     @staticmethod
@@ -253,7 +255,7 @@ class Spareparts(object):
         self.spl.type = self.spl.type.str.lower()
 
     def lines_numbers(self):
-        print(
+        logger.info(
             "\n"
             "-------------------------\n"
             f"spl       :\t{self.spl.shape[0]}\n"
@@ -267,6 +269,8 @@ class Spareparts(object):
         # TODO: Bashplotlib error display
         # plot_hist( f=[1,2,3], height=5, title='spl', pch='x')
 
+
+    @yaspin(sp, side="right",text="Creating excel file, do not close the opened window...")
     def create_excel(self, given_name_xlsx):
         """fill the tabs in excel file with the dataframes"""
         tabs = {
@@ -295,7 +299,7 @@ class Spareparts(object):
         wb.sheets[-1].delete()
         wb.save(given_name_xlsx)
         wb.close()
-        print(f"{output_1}: created")
+        logger.info(f"{template1}: created")
 
     @staticmethod
     def edit_excel(file_name, new_name):
@@ -312,7 +316,7 @@ class Spareparts(object):
                 cell.alignment = Alignment(horizontal="center")
         wb.save(new_name)
         wb.close()
-        print(f"{output_2}: created.")
+        logger.info(f"{template2}: created")
 
     def refine(self):
         ambiguous = self.spl[
@@ -334,8 +338,8 @@ class Spareparts(object):
     @Colors.obsolete(mauve)
     @Colors.meter_foot(blue)
     @Colors.electric(["Electric Component"], orange)
-    def extraction(file_name, workbook, sht_name):
-        df = pd.read_excel(file_name, sheet_name=sht_name)
+    def extraction(splname, workbook, sht_name):
+        df = pd.read_excel(splname, sheet_name=sht_name)
         sht = workbook.sheets[sht_name]
         return (df, sht)
 
@@ -360,7 +364,7 @@ class Spareparts(object):
             wb = Spareparts.add_colors(selected_file, tab)
         wb.save(new_file)
         wb.close()
-        print(f"{output_3}: created")
+        logger.info(f"{splname}: created")
 
     @staticmethod
     def log_report(_df, df_name):
@@ -531,7 +535,7 @@ class Spareparts(object):
             ],
         )
         self.garbage = pd.concat([self.garbage, _elec]).drop_duplicates(keep=False)
-        print(f"***_elec: {_elec}")
+        # logger.info(f"***_elec: {_elec}")
 
         Spareparts.log_report(_elec, "_elec")
 
@@ -717,8 +721,8 @@ class Spareparts(object):
 
     @staticmethod
     def del_templates():
-        logger.info(f"removing {output_1}, {output_2} ...")
+        logger.info(f"removing {template1}, {template2}")
         import os
-        os.remove(output_1)
-        os.remove(output_2)
-        logger.info(f"{output_1} - {output_2}: deleted.")
+        os.remove(template1)
+        os.remove(template2)
+        logger.info(f"{template1} - {template2}: deleted")

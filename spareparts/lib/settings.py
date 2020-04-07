@@ -57,4 +57,4 @@ last_columns = list(SPL_FRAME.keys())[-1][0]
 headers_bg_hue = {"A1:H1": yellow, f"I1:{last_columns}1": grey}
 
 # File names output
-output_1, output_2, output_3  = "template(0).xlsx", "template(1).xlsx", "SPL.xlsx"
+template1, template2, splname  = "template(0).xlsx", "template(1).xlsx", "SPL.xlsx"

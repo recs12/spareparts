@@ -1,14 +1,13 @@
 #!python3
 # -*- coding: utf-8 -*-
 
-import logzero
 from logzero import logger
 
 import click
 from spareparts.compare import differences
 from spareparts.db import generate_levels_report
-from spareparts.lib.grinder import Colors, Spareparts
-from spareparts.lib.settings import ACRONYM, output_1, output_2, output_3
+from spareparts.lib.grinder import Spareparts
+from spareparts.lib.settings import ACRONYM, template1, template2, splname
 from spareparts.lib.info import headlines
 
 @click.group()
@@ -28,7 +27,7 @@ def version():
 @cli.command("create", help="- Generate spareparts list in an excel format.")
 def main():
     try:
-        print(headlines)
+        logger.info(headlines)
         machine = Spareparts()
         machine.prompt_confirmation()
         machine.generate_spl()
@@ -38,15 +37,15 @@ def main():
         machine.drawing_number()
         machine.strain()
         machine.lines_numbers()
-        machine.create_excel(output_1)
-        machine.edit_excel(output_1, output_2)
-        machine.colors_excel(output_2, output_3)
+        machine.create_excel(template1)
+        machine.edit_excel(template1, template2)
+        machine.colors_excel(template2, splname)
         machine.del_templates()
-        logger.info("Process completed successfully.")
+        logger.error("Process completed successfully.")
     except FileNotFoundError as err:
-        logger.info(f"[!][{err}]")
+        logger.error(f"[!][{err}]")
     except FileExistsError as err:
-        logger.info(f"[!][{err}]")
+        logger.error(f"[!][{err}]")
     else:
         pass
     finally:

@@ -1,3 +1,5 @@
+import pandas as pd
+from spareparts.lib.decorators import special_pt, special_desc_2, special_desc_1
 
 def adjust_significance_notnull(spl, garbage):
     """relocate the significance is not nan"""
