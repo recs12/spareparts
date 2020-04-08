@@ -39,7 +39,7 @@ class Levels:
             sys.exit()
 
     def info(self):
-            print("SPL list:")
+            print("SPL archives:")
             print("=========")
             for doc in self.spls: print(f" - {doc}\n") #TODO: make a table of a list.
 

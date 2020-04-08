@@ -10,65 +10,9 @@ from logzero import logger
 from spareparts.lib.filters import *
 from spareparts.lib.settings import *
 import os
+from spareparts.lib.colors import Colors
 from yaspin import yaspin, Spinner
 sp = Spinner([".", "o", "O", "@", "."], 200)
-
-class Colors(object):
-
-    def electric(prp1, color):
-        def _outer_wrapper(wrapped_function):
-            @functools.wraps(wrapped_function)
-            def _wrapper(*args, **kwargs):
-                d, s = wrapped_function(*args, **kwargs)
-                targeted_index = d.index[d.prp1.isin(prp1)].tolist()
-                for row in targeted_index:
-                    cellule = (
-                        f"A{row+2}:U{row+2}"
-                    )  # number 2 added for compensate lapse in excel file
-                    s.range(cellule).color = color
-                return (d, s)
-
-            return _wrapper
-
-        return _outer_wrapper
-
-    def obsolete(color):
-        def _outer_wrapper(wrapped_function):
-            @functools.wraps(wrapped_function)
-            def _wrapper(*args, **kwargs):
-                d, s = wrapped_function(*args, **kwargs)
-                targeted_index = d.index[d.ST.isin(["O", "U"])].tolist()
-                for row in targeted_index:
-                    cellule = (
-                        f"J{row+2}"
-                    )  # number 2 added for compensate lapse in excel file
-                    s.range(cellule).color = color
-                return (d, s)
-
-            return _wrapper
-
-        return _outer_wrapper
-
-    def meter_foot(color):
-        def _outer_wrapper(wrapped_function):
-            @functools.wraps(wrapped_function)
-            def _wrapper(*args, **kwargs):
-                d, s = wrapped_function(*args, **kwargs)
-                targeted_index = d.index[d.UOM.isin(["MT", "FT", "RL", "SF"])].tolist()
-                for row in targeted_index:
-                    cellule = (
-                        f"I{row+2}"
-                    )  # number 2 added for compensate lapse in excel file
-                    s.range(cellule).color = color
-                return (d, s)
-
-            return _wrapper
-
-        return _outer_wrapper
-
-    electric = staticmethod(electric)
-    obsolete = staticmethod(obsolete)
-    meter_foot = staticmethod(meter_foot)
 
 
 class Spareparts(object):
@@ -153,7 +97,7 @@ class Spareparts(object):
                 jde_temp = pd.read_csv(JDE_TEMP)
                 return jde_temp
             else:
-                logger.info("Process interrupted.")
+                print("Process interrupted.")
                 sys.exit()
         else:
             with yaspin(sp, side="right", text="Loading the JDE Inventory..."):
@@ -257,6 +201,7 @@ class Spareparts(object):
     def lines_numbers(self):
         logger.info(
             "\n"
+            "Qty/Groups :\n"
             "-------------------------\n"
             f"spl       :\t{self.spl.shape[0]}\n"
             f"garbage   :\t{self.garbage.shape[0]}\n"
@@ -266,11 +211,9 @@ class Spareparts(object):
             f"nuts      :\t{self.nuts.shape[0]}\n"
             "-------------------------\n"
         )
-        # TODO: Bashplotlib error display
-        # plot_hist( f=[1,2,3], height=5, title='spl', pch='x')
 
 
-    @yaspin(sp, side="right",text="Creating excel file, do not close the opened window...")
+    @yaspin(sp, side="right",text="Creating excel file, do not close the window ")
     def create_excel(self, given_name_xlsx):
         """fill the tabs in excel file with the dataframes"""
         tabs = {
@@ -302,6 +245,7 @@ class Spareparts(object):
         logger.info(f"{template1}: created")
 
     @staticmethod
+    @yaspin(sp, side="right",text="Editing excel file, do not close the window ")
     def edit_excel(file_name, new_name):
         wb = load_workbook(file_name)
         for s in wb.sheetnames:
@@ -351,6 +295,7 @@ class Spareparts(object):
         Spareparts.extraction(selected_file, wb, sheet_spl)
         return wb
 
+    @yaspin(sp, side="right",text="Editing excel file, do not close the window ")
     def colors_excel(self, selected_file, new_file):
         args = {
             "nuts": self.nuts,

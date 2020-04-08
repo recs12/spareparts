@@ -41,7 +41,7 @@ def main():
         machine.edit_excel(template1, template2)
         machine.colors_excel(template2, splname)
         machine.del_templates()
-        logger.error("Process completed successfully.")
+        print("Process completed successfully.")
     except FileNotFoundError as err:
         logger.error(f"[!][{err}]")
     except FileExistsError as err:

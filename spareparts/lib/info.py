@@ -8,6 +8,5 @@ Spareparts (Run on reports from solidedge.)
 - Last update:                                        2020-03-17
 ================================================================
 
-
 """
 )
