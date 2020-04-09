@@ -1,22 +1,47 @@
+import os
 import sys
-import functools
+
 import numpy as np
 import pandas as pd
 import xlwings as xw
+from logzero import logger
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
-from spareparts.lib.settings import *
-from logzero import logger
-from spareparts.lib.filters import *
-from spareparts.lib.settings import *
-import os
+
 from spareparts.lib.colors import Colors
-from yaspin import yaspin, Spinner
+from spareparts.lib.filters import (
+    trash_assemblies,
+    trash_description,
+    trash_fastener,
+    trash_file_name,
+    trash_item_number,
+    trash_parts_ending_P1_or_A1,
+    trash_prp,
+    trash_prp1,
+    trash_robot,
+)
+from spareparts.lib.settings import (
+    JDEPATH,
+    blue,
+    dict_header,
+    excel_headers,
+    headers_bg_hue,
+    mauve,
+    orange,
+    splname,
+    temp_jde,
+    template1,
+    template2,
+    tempo_local,
+)
+from yaspin import Spinner, yaspin
+
 sp = Spinner([".", "o", "O", "@", "."], 200)
 
 
-class Spareparts(object):
+class Spareparts:
     """Generate spareparts list."""
+
     JDE_TEMP = os.path.join(tempo_local, temp_jde)
 
     def __init__(self):
@@ -31,36 +56,41 @@ class Spareparts(object):
         self.gearbox = pd.DataFrame()
         self.drawings = {}
 
-
     def generate_spl(self):
-        if os.path.exists('SPL.xlsx'):
-            raise FileExistsError('Remove or rename the SPL.xlsx in the current folder to able the process to run.')
-        has_text_reports =  os.listdir('.')
-        if not has_text_reports:
-            raise FileNotFoundError('No text file report has been found in the current folder.')
-        else:
-            files = (file for file in Spareparts.listing_txt_files())
-            parts = pd.concat(
-                [Spareparts.parse_se_report(file) for file in files], ignore_index=True
+        if os.path.exists("SPL.xlsx"):
+            raise FileExistsError(
+                "Remove or rename the SPL.xlsx in the current folder to able the process to run."
             )
-            self.spl = Spareparts.joining_spl_jde(self.jde, parts)
-            self.spl.part_number = (
-                self.spl.part_number.str.strip()
-            )  # strip part_number column
+        has_text_reports = os.listdir(".")
+
+        if not has_text_reports:
+            raise FileNotFoundError(
+                "No text file report has been found in the current folder."
+            )
+
+        files = (file for file in Spareparts.listing_txt_files())
+        parts = pd.concat(
+            [Spareparts.parse_se_report(file) for file in files], ignore_index=True
+        )
+        self.spl = Spareparts.joining_spl_jde(self.jde, parts)
+        self.spl.part_number = (
+            self.spl.part_number.str.strip()
+        )  # strip part_number column
 
     def load_db(self):
         """Load the item-level database"""
-        db_model = os.path.join(tempo_local, 'levels.csv')
+        db_model = os.path.join(tempo_local, "levels.csv")
+
         if not os.path.exists(db_model):
             raise FileNotFoundError("No file levels.csv found in user tempo.\n")
-        else:
-            df = pd.read_csv(db_model, dtype={"possibility": str})
-            df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
-            df.item_number = df.item_number.astype(str)
-            df.item_number = df.item_number.str.strip()
-            df.possibility = df.possibility.astype(str)
-            df.possibility = df.possibility.str.strip()
-            self.db = df[["item_number", "possibility"]]
+
+        df = pd.read_csv(db_model, dtype={"possibility": str})
+        df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+        df.item_number = df.item_number.astype(str)
+        df.item_number = df.item_number.str.strip()
+        df.possibility = df.possibility.astype(str)
+        df.possibility = df.possibility.str.strip()
+        self.db = df[["item_number", "possibility"]]
         self.spl = self.spl.join(self.db.set_index("item_number"), on="jdelitm")
 
     @staticmethod
@@ -68,12 +98,12 @@ class Spareparts(object):
         """load the data from spl list"""
         if not os.path.exists(path):
             raise FileNotFoundError("Check if spl path is correct.")
-        else:
-            spl = pd.read_excel(path, sheet_name="Sheet1")
-            spl.columns = spl.columns.str.strip().str.lower().str.replace(" ", "_")
-            spl.item_number = spl.item_number.astype("str")
-            spl = spl[["item_number"]]
-            return spl
+
+        spl = pd.read_excel(path, sheet_name="Sheet1")
+        spl.columns = spl.columns.str.strip().str.lower().str.replace(" ", "_")
+        spl.item_number = spl.item_number.astype("str")
+        spl = spl[["item_number"]]
+        return spl
 
     @staticmethod
     def load_jde_data():
@@ -88,13 +118,11 @@ class Spareparts(object):
             else:
                 print("Process interrupted.")
                 sys.exit()
-        else:
-            with yaspin(sp, side="right", text="Loading the JDE Inventory..."):
-                jde_data = Spareparts.extract_jde()
-            jde_data.to_csv(JDE_TEMP, index=False)
-            return jde_data
 
-
+        with yaspin(sp, side="right", text="Loading the JDE Inventory..."):
+            jde_data = Spareparts.extract_jde()
+        jde_data.to_csv(JDE_TEMP, index=False)
+        return jde_data
 
     @staticmethod
     def extract_jde():
@@ -138,7 +166,7 @@ class Spareparts(object):
             )
         except pd.errors.ParserError as parse_error:
             # Wrong format of text extracted from solidedge.
-            logger.info(f" [-][{parse_error}]")
+            logger.error(f" [-][{parse_error}]")
             sys.exit()
 
         else:
@@ -156,12 +184,11 @@ class Spareparts(object):
             # give the module number
             module_number = os.path.splitext(os.path.basename(fichier))[0]
             df["module"] = module_number
-            logger.info(f" [+][\t{module_number}\t]")
+            logger.info(" [+][\t %s }\t]" % module_number)
             return df
 
         finally:
             df = None
-
 
     @staticmethod
     def listing_txt_files():
@@ -207,8 +234,7 @@ class Spareparts(object):
             "-------------------------\n\n"
         )
 
-
-    @yaspin(sp, side="right",text="Creating excel file, do not close the window ")
+    @yaspin(sp, side="right", text="Creating excel file, do not close the window ")
     def create_excel(self, given_name_xlsx):
         """fill the tabs in excel file with the dataframes"""
         tabs = {
@@ -240,7 +266,7 @@ class Spareparts(object):
         logger.info(f"{template1}: created")
 
     @staticmethod
-    @yaspin(sp, side="right",text="Editing excel file, do not close the window ")
+    @yaspin(sp, side="right", text="Editing excel file, do not close the window ")
     def edit_excel(file_name, new_name):
         wb = load_workbook(file_name)
         for s in wb.sheetnames:
@@ -290,7 +316,7 @@ class Spareparts(object):
         Spareparts.extraction(selected_file, wb, sheet_spl)
         return wb
 
-    @yaspin(sp, side="right",text="Editing excel file, do not close the window ")
+    @yaspin(sp, side="right", text="Editing excel file, do not close the window ")
     def colors_excel(self, selected_file, new_file):
         args = {
             "nuts": self.nuts,
@@ -309,19 +335,16 @@ class Spareparts(object):
     @staticmethod
     def log_report(_df, df_name):
         _df["groupe"] = df_name
-        logger.info(
-            "\ndf_name:\n" + _df[["groupe", "part_number", "description_1"]].to_string()
-        )
+        logger.info(_df[["groupe", "part_number", "description_1"]].to_string())
 
     def strain(self):
         """Filters of unwanted parts here."""
 
-        #--------------------------------------------------------------------#
+        # --------------------------------------------------------------------#
         #                                                                    #
         #                           START FILTERS HERE                       #
         #                                                                    #
-        #--------------------------------------------------------------------#
-
+        # --------------------------------------------------------------------#
 
         # === plates ===
         plates_prp1 = ["Aluminium", "Stainless Steel", "Steel"]
@@ -388,9 +411,7 @@ class Spareparts(object):
             "171228",
         ]
         self.spl, self.garbage, _inside_gripper = trash_item_number(
-            self.spl,
-            self.garbage,
-            list_parts=contents_of_gripper,
+            self.spl, self.garbage, list_parts=contents_of_gripper
         )
         self.garbage = pd.concat([self.garbage, _inside_gripper]).drop_duplicates(
             keep=False
@@ -422,9 +443,6 @@ class Spareparts(object):
         )
         self.garbage = pd.concat([self.garbage, _gearbox]).drop_duplicates(keep=False)
         Spareparts.log_report(_gearbox, "_gearbox")
-
-        # === _sheave ===
-        """ALBP(2019-09-16): TIMING BELT SHEAVE kept in SPL."""
 
         # === _grommet ===
         self.spl, self.garbage, _grommet = trash_description(
@@ -490,7 +508,6 @@ class Spareparts(object):
         self.garbage = pd.concat([self.garbage, _P1_A1]).drop_duplicates(keep=False)
         Spareparts.log_report(_P1_A1, "_P1_A1")
 
-
         # === _collar ===
         collar = r"COLLAR"
         self.spl, self.garbage, _collar = trash_description(
@@ -535,9 +552,7 @@ class Spareparts(object):
         self.spl, self.garbage, _keysquare = trash_description(
             self.spl, self.garbage, keyword="KEY;SQUARE"
         )
-        self.garbage = pd.concat([self.garbage, _keysquare]).drop_duplicates(
-            keep=False
-        )
+        self.garbage = pd.concat([self.garbage, _keysquare]).drop_duplicates(keep=False)
         Spareparts.log_report(_keysquare, "_keysquare")
 
         # === _stud ===
@@ -583,19 +598,23 @@ class Spareparts(object):
         self.spl, self.garbage, _eye = trash_description(
             self.spl, self.garbage, keyword="EYE BOLT;SHOULDER"
         )
-        self.garbage = pd.concat([self.garbage, _eye], sort=True).drop_duplicates(keep=False)
+        self.garbage = pd.concat([self.garbage, _eye], sort=True).drop_duplicates(
+            keep=False
+        )
         Spareparts.log_report(_eye, "_eye")
 
         # === POLYCARBONATE PLATE ===
         self.spl, self.garbage, _polycarbonate = trash_description(
             self.spl, self.garbage, keyword="POLYCARBONATE PLATE"
         )
-        self.garbage = pd.concat([self.garbage, _polycarbonate], sort=True).drop_duplicates(keep=False)
+        self.garbage = pd.concat(
+            [self.garbage, _polycarbonate], sort=True
+        ).drop_duplicates(keep=False)
         Spareparts.log_report(_polycarbonate, "_polycarbonate")
 
-        #--------------------------------------------------------------------#
+        # --------------------------------------------------------------------#
         #                           END FILTERS HERE                         #
-        #--------------------------------------------------------------------#
+        # --------------------------------------------------------------------#
 
         self.spl = self.spl.drop_duplicates(keep=False)
         self.asm = _asm
@@ -604,30 +623,35 @@ class Spareparts(object):
         self.plates = _plates
         self.gearbox = _gearbox
         # Garbage include all filtered parts
-        self.garbage =  pd.concat([self.garbage,
-                                    _uncatego,
-                                    _inside_gripper,
-                                    _industrial,
-                                    _furniture,
-                                    _grommet,
-                                    # _manif,
-                                    _pneu_frl,
-                                    _clamp,
-                                    _par,
-                                    _collar,
-                                    _fpmr,
-                                    _fit,
-                                    _misc,
-                                    _stud,
-                                    _keysquare,
-                                    _stud,
-                                    _suppliers,
-                                    _weldnut,
-                                    _transparent,
-                                    _hoffman_pkg,
-                                    _eye,
-                                    _polycarbonate,
-                                    ], ignore_index=True, sort=False).drop_duplicates(keep=False)
+        self.garbage = pd.concat(
+            [
+                self.garbage,
+                _uncatego,
+                _inside_gripper,
+                _industrial,
+                _furniture,
+                _grommet,
+                # _manif,
+                _pneu_frl,
+                _clamp,
+                _par,
+                _collar,
+                _fpmr,
+                _fit,
+                _misc,
+                _stud,
+                _keysquare,
+                _stud,
+                _suppliers,
+                _weldnut,
+                _transparent,
+                _hoffman_pkg,
+                _eye,
+                _polycarbonate,
+            ],
+            ignore_index=True,
+            sort=False,
+        ).drop_duplicates(keep=False)
 
     def equivalences(self):
         """return dictionnary > {ptnumber:drawing number}"""
@@ -659,7 +683,6 @@ class Spareparts(object):
     @staticmethod
     def del_templates():
         logger.info(f"removing {template1}, {template2}")
-        import os
         os.remove(template1)
         os.remove(template2)
         logger.info(f"{template1} - {template2}: deleted")

@@ -1,8 +1,7 @@
 import functools
 
 
-class Colors(object):
-
+class Colors:
     def electric(prp1, color):
         def _outer_wrapper(wrapped_function):
             @functools.wraps(wrapped_function)

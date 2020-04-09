@@ -1,6 +1,7 @@
 import pandas as pd
 from spareparts.lib.decorators import special_pt, special_desc_2, special_desc_1
 
+
 def adjust_significance_notnull(spl, garbage):
     """relocate the significance is not nan"""
     relocate = garbage[garbage.possibility.notna()]
@@ -28,10 +29,10 @@ def trash_assemblies(spl, garbage):
     return (spl, garbage, relocate)
 
 
-def trash_robot(spl, garbage, criteres=["LR Mate"]):
+def trash_robot(spl, garbage):
     """robot -> garbage"""
-    relocate = spl[spl.type.isin(criteres)]
-    spl = spl[~spl.type.isin(criteres)]
+    relocate = spl[spl.type.isin(["LR Mate"])]
+    spl = spl[~spl.type.isin(["LR Mate"])]
     garbage = pd.concat([garbage, relocate], ignore_index=True)
     return (spl, garbage, relocate)
 
@@ -51,7 +52,7 @@ def trash_description(spl, garbage, keyword, description="description_1"):
 
 @special_desc_1(r"O-RING-NITRILE")
 @special_pt("157930")
-def trash_fastener(spl, garbage, prp1=[50, '50', 90, '90']):
+def trash_fastener(spl, garbage, prp1=[50, "50", 90, "90"]):
     """Filter for fastener"""
     relocate = spl[spl.comm_class.isin(prp1)]
     spl = spl[~spl.comm_class.isin(prp1)]
@@ -59,7 +60,7 @@ def trash_fastener(spl, garbage, prp1=[50, '50', 90, '90']):
     return (spl, garbage, relocate)
 
 
-def trash_prp(spl, garbage, prp1=[], prp2=[]):
+def trash_prp(spl, garbage, prp1, prp2):
     """prp1, prp2"""
     relocate = spl[spl.description_prp1.isin(prp1) & spl.description_prp2.isin(prp2)]
     spl = spl[~(spl.description_prp1.isin(prp1) & spl.description_prp2.isin(prp2))]
@@ -79,7 +80,7 @@ def trash_prp(spl, garbage, prp1=[], prp2=[]):
 )  # regex: line with both words BARB and bNYLON.
 @special_desc_1("BFR")
 @special_desc_1("BUMPER")
-def trash_prp1(spl, garbage, prp1=[]):
+def trash_prp1(spl, garbage, prp1):
     """prp1"""
     relocate = spl[spl.description_prp1.isin(prp1)]
     spl = spl[~spl.description_prp1.isin(prp1)]

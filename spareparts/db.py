@@ -6,6 +6,7 @@ import sys
 import warnings
 import pandas as pd
 from pprint import PrettyPrinter
+
 warnings.filterwarnings("ignore", "This pattern has match groups")
 
 
@@ -39,9 +40,10 @@ class Levels:
             sys.exit()
 
     def info(self):
-            print("SPL archives:")
-            print("=========")
-            for doc in self.spls: print(f" - {doc}\n") #TODO: make a table of a list.
+        print("SPL archives:")
+        print("=========")
+        for doc in self.spls:
+            print(f" - {doc}\n")  # TODO: make a table of a list.
 
     def del_empty_rows(self):
         """Remove empty rows in column: item number"""

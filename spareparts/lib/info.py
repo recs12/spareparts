@@ -1,5 +1,4 @@
-headlines = (
-"""
+headlines = """
 
 Spareparts (Run on reports from solidedge.)
 ================================================================
@@ -9,4 +8,3 @@ Spareparts (Run on reports from solidedge.)
 ================================================================
 
 """
-)
