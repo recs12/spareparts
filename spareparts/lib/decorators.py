@@ -1,5 +1,7 @@
-import pandas as pd
 import functools
+
+import pandas as pd
+
 
 def special_pt(regx):
     """decorator"""

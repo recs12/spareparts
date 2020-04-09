@@ -31,16 +31,6 @@ class Spareparts(object):
         self.gearbox = pd.DataFrame()
         self.drawings = {}
 
-    @staticmethod
-    def prompt_confirmation():
-        "ask user to resume the program"
-        logger.info(f"Run: {__file__}")
-        answer = input("Proceed ([y]/n) ?:  ")
-        if answer.lower() in ["yes", "y"]:
-            pass
-        else:
-            logger.info("Process has stopped.")
-            sys.exit()
 
     def generate_spl(self):
         if os.path.exists('SPL.xlsx'):
@@ -51,7 +41,7 @@ class Spareparts(object):
         else:
             files = (file for file in Spareparts.listing_txt_files())
             parts = pd.concat(
-                [Spareparts.extract_data(file) for file in files], ignore_index=True
+                [Spareparts.parse_se_report(file) for file in files], ignore_index=True
             )
             self.spl = Spareparts.joining_spl_jde(self.jde, parts)
             self.spl.part_number = (
@@ -87,7 +77,6 @@ class Spareparts(object):
 
     @staticmethod
     def load_jde_data():
-        """"""
         JDE_TEMP = Spareparts.JDE_TEMP
         if os.path.exists(JDE_TEMP):
             answer = input(
@@ -104,6 +93,8 @@ class Spareparts(object):
                 jde_data = Spareparts.extract_jde()
             jde_data.to_csv(JDE_TEMP, index=False)
             return jde_data
+
+
 
     @staticmethod
     def extract_jde():
@@ -122,7 +113,7 @@ class Spareparts(object):
         return df
 
     @staticmethod
-    def extract_data(fichier):
+    def parse_se_report(fichier):
         """"""
         try:
             # add try and except
@@ -145,6 +136,12 @@ class Spareparts(object):
                 error_bad_lines=False,
                 na_values="-",
             )
+        except pd.errors.ParserError as parse_error:
+            # Wrong format of text extracted from solidedge.
+            logger.info(f" [-][{parse_error}]")
+            sys.exit()
+
+        else:
             # clean the columns
             df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
             df["jdelitm"] = df["jdelitm"].str.strip()
@@ -161,17 +158,15 @@ class Spareparts(object):
             df["module"] = module_number
             logger.info(f" [+][\t{module_number}\t]")
             return df
-        except pd.errors.ParserError as parse_error:
-            # Wrong format of text extracted from solidedge.
-            logger.info(f" [-][{parse_error}]")
-            sys.exit()
+
+        finally:
+            df = None
+
 
     @staticmethod
     def listing_txt_files():
         """"""
-        for file in os.listdir(r"."):
-            if file.endswith(".txt"):
-                yield file
+        return (file for file in os.listdir(".") if file.endswith(".txt"))
 
     @staticmethod
     def replacing_C01(df):
@@ -200,7 +195,7 @@ class Spareparts(object):
 
     def lines_numbers(self):
         logger.info(
-            "\n"
+            "\n\n"
             "Qty/Groups :\n"
             "-------------------------\n"
             f"spl       :\t{self.spl.shape[0]}\n"
@@ -209,7 +204,7 @@ class Spareparts(object):
             f"elec      :\t{self.elec.shape[0]}\n"
             f"asm       :\t{self.asm.shape[0]}\n"
             f"nuts      :\t{self.nuts.shape[0]}\n"
-            "-------------------------\n"
+            "-------------------------\n\n"
         )
 
 
@@ -320,9 +315,6 @@ class Spareparts(object):
 
     def strain(self):
         """Filters of unwanted parts here."""
-
-        # logger.add("report_{time}.log", level="INFO")
-
 
         #--------------------------------------------------------------------#
         #                                                                    #
@@ -671,3 +663,14 @@ class Spareparts(object):
         os.remove(template1)
         os.remove(template2)
         logger.info(f"{template1} - {template2}: deleted")
+
+    @staticmethod
+    def prompt_confirmation():
+        "ask user to resume the program"
+        logger.info(f"Run: {__file__}")
+        answer = input("Proceed ([y]/n) ?:  ")
+        if answer.lower() in ["yes", "y"]:
+            pass
+        else:
+            print("Process has stopped.")
+            sys.exit()

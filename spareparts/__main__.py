@@ -7,8 +7,9 @@ import click
 from spareparts.compare import differences
 from spareparts.db import generate_levels_report
 from spareparts.lib.grinder import Spareparts
-from spareparts.lib.settings import ACRONYM, template1, template2, splname
 from spareparts.lib.info import headlines
+from spareparts.lib.settings import ACRONYM, splname, template1, template2
+
 
 @click.group()
 def cli():
@@ -64,4 +65,3 @@ if __name__ == "__main__":
 # TODO: [1] write docs > pycco (print paper format tabloid)
 # TODO: [3] correction - close excel file at end of process
 # TODO: [3] write test:: strain by modifiying the class Spareparts
-

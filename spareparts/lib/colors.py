@@ -1,5 +1,6 @@
 import functools
 
+
 class Colors(object):
 
     def electric(prp1, color):
@@ -56,4 +57,3 @@ class Colors(object):
     electric = staticmethod(electric)
     obsolete = staticmethod(obsolete)
     meter_foot = staticmethod(meter_foot)
-
