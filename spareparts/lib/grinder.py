@@ -36,7 +36,23 @@ from spareparts.lib.settings import (
 )
 from yaspin import Spinner, yaspin
 
-sp = Spinner([".", "o", "O", "@", "."], 200)
+sp = Spinner([
+			"[    ]",
+			"[=   ]",
+			"[==  ]",
+			"[=== ]",
+			"[ ===]",
+			"[  ==]",
+			"[   =]",
+			"[    ]",
+			"[   =]",
+			"[  ==]",
+			"[ ===]",
+			"[====]",
+			"[=== ]",
+			"[==  ]",
+			"[=   ]"
+		], 80)
 
 
 class Spareparts:
@@ -118,11 +134,11 @@ class Spareparts:
             else:
                 print("Process interrupted.")
                 sys.exit()
-
-        with yaspin(sp, side="right", text="Loading the JDE Inventory..."):
-            jde_data = Spareparts.extract_jde()
-        jde_data.to_csv(JDE_TEMP, index=False)
-        return jde_data
+        else:
+            with yaspin(sp, side="right", text="Loading the JDE Inventory..."):
+                jde_data = Spareparts.extract_jde()
+            jde_data.to_csv(JDE_TEMP, index=False)
+            return jde_data
 
     @staticmethod
     def extract_jde():
