@@ -350,8 +350,11 @@ class Spareparts:
 
     @staticmethod
     def log_report(_df, df_name):
-        _df["groupe"] = df_name
-        logger.info(_df[["groupe", "part_number", "description_1"]].to_string())
+        if _df.shape[0] == 0:
+            pass
+        else:
+            _df["groupe"] = df_name
+            logger.info("\n"+ _df[["groupe", "part_number", "description_1"]].to_string())
 
     def strain(self):
         """Filters of unwanted parts here."""
