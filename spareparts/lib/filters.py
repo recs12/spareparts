@@ -31,8 +31,8 @@ def trash_assemblies(spl, garbage):
 
 def trash_robot(spl, garbage):
     """robot -> garbage"""
-    relocate = spl[spl.type.isin(["LR Mate"])]
-    spl = spl[~spl.type.isin(["LR Mate"])]
+    relocate = spl[spl.type.isin(["LR Mate","lr mate"])]
+    spl = spl[~spl.type.isin(["LR Mate","lr mate"])]
     garbage = pd.concat([garbage, relocate], ignore_index=True)
     return (spl, garbage, relocate)
 

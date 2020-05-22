@@ -196,9 +196,9 @@ class Spareparts:
                 as_index=False,
             )["quantity"].sum()
             df = df.replace(r"^-?\s+$", np.nan, regex=True)
-            df = df.dropna(subset=["part_number", "jdelitm"])
+            df = df.dropna(subset=["part_number", "jdelitm"]) #TODO: Keep the JDELITM columns in spl.
             # give the module number
-            module_number = os.path.splitext(os.path.basename(fichier))[0]
+            module_number = os.path.splitext(os.path.basename(fichier))[0] 
             df["module"] = module_number
             logger.info(" [+][\t %s }\t]" % module_number)
             return df
